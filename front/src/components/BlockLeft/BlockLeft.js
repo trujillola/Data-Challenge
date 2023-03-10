@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './BlockLeft.css'
 import dots from '../../assets/dots.png'
+import play_btn from '../../assets/play_btn.svg'
 
 
 function BlockLeft(props) {
@@ -43,6 +44,7 @@ function BlockLeft(props) {
                 </label>
             </div>
             <img className='dots' src={dots} alt='dots'/>
+            <img className='play_btn' src={play_btn} alt='play btn'/>
         </div>
     );
 }

@@ -50,6 +50,7 @@ select option{
 .btn-upload{
     background-color: var(--primary-color-white);
     color: var(--color-green);
+    width: 200px;
 }
 
 .btn-select-disabled{
@@ -68,6 +69,11 @@ select option{
 
 .dots{
     width: 35%;
+    align-self: center;
+}
+
+.play_btn{
+    width: 25%;
     align-self: center;
 }
 
