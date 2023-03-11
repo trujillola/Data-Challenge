@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from fastapi import UploadFile
 import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
@@ -67,10 +68,16 @@ class FileManager:
         """
         return
     
-    def upload_file(self, file):
+    def upload_file(self, uploaded_file : UploadFile):
         """
         """
-        return
+        file_directory = uploaded_file.filename.split("__")[0]
+        if not os.path.exists(self.dir+"/"+file_directory):
+            os.mkdir(self.dir+"/"+file_directory)
+        file_location = self.dir+"/"+file_directory+"/"+uploaded_file.filename
+        with open(file_location, "wb+") as file_object:
+            file_object.write(uploaded_file.file.read())
+        return {"info": f"file '{uploaded_file.filename}' saved at '{file_location}'"}
     
     def get_files_list(self):
         """

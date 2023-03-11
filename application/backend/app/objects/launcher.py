@@ -1,4 +1,5 @@
-from app.objects.manager import FileManager, Datasets, File
+from app.objects.manager import FileManager, File
+from fastapi import UploadFile
 from app.model.model import OCRmodel
 import numpy as np
 import pandas as pd
@@ -10,15 +11,14 @@ class Launcher:
     """
 
     file_manager : FileManager
-    datasets : Datasets
     model : OCRmodel
 
-    def __init__(self,data_file_name : str = "/data/Wines.csv", save_file_name : str = "/data/random_forest.joblib"):
+    def __init__(self):
         """
             Initialize the launcher object and train the model if it doesn't exist
             params : file path of model and list of Wines
         """ 
-
+        self.file_manager = FileManager()
 
     def get_composition(self, file : File):
         """
@@ -30,8 +30,15 @@ class Launcher:
         """ 
         return self.model.composition(file)
 
+    def get_files_list(self):
+        """
+            Get the list of files
 
-    def upload_file(self, file : File):
+            Returns: the list of files
+        """ 
+        return self.file_manager.get_files_list()
+
+    def upload_file(self, uploaded_file : UploadFile):
         """
             Adds a line of data to the csv file (and update the datasets??)
 
@@ -41,9 +48,8 @@ class Launcher:
             Returns:
                 bool: True if the data was added, False otherwise.
         """
-        result = self.file_manager.write_data(file)
-        self.datasets = Datasets(self.file_manager.read_data())
-        return result
+        
+        return self.file_manager.upload_file(uploaded_file)
 
 
     
