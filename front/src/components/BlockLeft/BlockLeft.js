@@ -29,7 +29,7 @@ function BlockLeft(props) {
                 {/* <button className='btn-select'>Select completion log</button> */}
 
             
-                <select disabled={fileName != 'Upload New'? true : false} id="file-select" className={fileName != 'Upload New'? 'btn-select-disabled':'btn-select'} value={selectedFile} onChange={handleFileChange}>
+                <select disabled={fileName !== 'Upload New'? true : false} id="file-select" className={fileName !== 'Upload New'? 'btn-select-disabled':'btn-select'} value={selectedFile} onChange={handleFileChange}>
                     <option value="">-- Select completion log --</option>
                     {fileList.map((file) => (
                     <option key={file} value={file}>
@@ -38,13 +38,13 @@ function BlockLeft(props) {
                     ))}
                 </select>
  
-                <label className={selectedFile != ''? 'btn-upload-disabled':'btn-upload'} > 
+                <label className={selectedFile !== ''? 'btn-upload-disabled':'btn-upload'} > 
                     <span>{fileName}</span>
-                    <input disabled={selectedFile != ''? true : false} className='btn-upload' type="file" name="upload" accept="application/pdf" placeholder='Upload New' onChange={handleChange}/>
+                    <input disabled={selectedFile !== ''? true : false} className='btn-upload' type="file" name="upload" accept="application/pdf" placeholder='Upload New' onChange={handleChange}/>
                 </label>
             </div>
             <img className='dots' src={dots} alt='dots'/>
-            <img className='play_btn' src={play_btn} alt='play btn'/>
+            <a className='play_btn' href='#main'><img src={play_btn} alt='play btn'/></a>
         </div>
     );
 }
