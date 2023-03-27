@@ -1,0 +1,10 @@
+opencv-python
+Pillow
+numpy
+pytesseract
+matplotlib
+tensorflow
+openpyxl
+fastapi
+joblib
+scikit-learn
