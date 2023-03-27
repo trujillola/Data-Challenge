@@ -128,4 +128,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+
 /NO_Quad_15
+
+# Data
+
+application/backend/app/data/
+

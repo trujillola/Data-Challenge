@@ -1,0 +1,6 @@
+uvicorn
+joblib
+pandas
+fastapi
+pytest
+pytest-cov
