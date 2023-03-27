@@ -11,7 +11,6 @@ dir = './NO_Quad_15/15_3-4/'
 image = cv2.imread(dir+'completion_log.png')
 
 result = image.copy()
-
 # Convert to grayscale and apply Otsu's thresholding
 gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 thresh = cv2.threshold(gray,0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
@@ -29,9 +28,13 @@ for c in cnts:
 
 cv2.imwrite(dir+"split.png", result)
 
-# # Find maximum of x and minimum
+
+## CROP IMAGES
+
+# # Find maximum and minimum of x coordinates 
 x_start = 0
 x_end = 42
+# Find maximum and minimum of y coordinates for each block of stones
 y_top = cnts[0][0][0][1]
 y_end = image.shape[0]
 cv2.imwrite(dir+str(0)+".png", image[y_top:y_end, x_start:x_end])
