@@ -5,7 +5,7 @@ import pytesseract
 
 
 
-dir = './NO_Quad_15/15_3-2/'
+dir = './NO_Quad_15/15_3-4/'
 
 image = cv2.imread(dir+'legend.png')
 
@@ -37,11 +37,12 @@ contours, hierarchy = cv2.findContours(blur, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX
 for contour in contours:
     # Calculer l'aire du contour
     area = cv2.contourArea(contour)
-
    
     # Ignorer les contours trop petits ou trop grands
-    if area < 2000 or area > 2500:
+    if area < 2000 or area > 80000:
          continue
+
+    print(area)  
 
     # Trouver le rectangle qui englobe le contour
     rect = cv2.minAreaRect(contour)
