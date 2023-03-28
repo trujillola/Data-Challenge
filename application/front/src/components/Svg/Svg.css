@@ -14,14 +14,17 @@
   .path {
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
-    animation: dash 5s linear alternate infinite;
+    animation: dash 10s linear infinite;
   }
-
+  
   @keyframes dash {
-    from {
-      stroke-dashoffset: 922;
-    }
     to {
       stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes spin {
+    100% {
+      transform:rotate(1turn) translate(310px) rotate(-1turn);
     }
   }

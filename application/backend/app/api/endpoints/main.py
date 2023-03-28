@@ -93,7 +93,7 @@ async def get_well_position(file_name : str):
         position : 
 
     """
-    position = {'name' : 'Pau', 'coordinates': [-0.370797, 43.2951] }
+    position = {'name' : 'Pau', 'coordinates': [1, 58] }
     return position
 
 
