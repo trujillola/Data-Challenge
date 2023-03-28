@@ -1,6 +1,6 @@
 #  
 from joblib import dump, load
-from app.objects.manager import Datasets, Lithologie
+from app.objects.manager import Lithologie
 from codecarbon import EmissionsTracker
 from PIL import Image
 import os
@@ -171,7 +171,6 @@ class ResNetModel:
         noms, valeurs = self.get_composition_from_excel(litho.litho_dir)
         return noms, valeurs
     
-        
 
 
 

@@ -53,4 +53,26 @@ class Launcher:
         return self.file_manager.upload_file(uploaded_file)
 
 
-    
+    def get_well_position(self, file_name : str):
+        """
+            Get the position of the well based on a file
+
+            Args: file is a File object
+
+            Returns: the dictionnary of the position
+        """ 
+        infos = Lithologie(file_name).infos
+        position = {"NS" : infos["NS degrees"], "EW" : infos["EW degrees"]}
+        return position 
+
+    def get_well_description(self, file_name : str):
+        """
+            Get the position of the well based on a file
+
+            Args: file is a File object
+
+            Returns: the dictionnary of the position
+        """ 
+        infos = Lithologie(file_name).infos
+        position = {"depth" : infos["Total depth (MD) [m RKB]"], "description" : infos["general"]}
+        return position 

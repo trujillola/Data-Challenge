@@ -81,7 +81,7 @@ async def get_well_composition(file_name : str):
         description : string of the description of the well
 
     """
-    description = ""
+    description = launcher.get_well_description(file_name)
     return description
 
 
@@ -97,7 +97,7 @@ async def get_well_position(file_name : str):
         position : 
 
     """
-    position = ""
+    position = launcher.get_well_position(file_name)
     return position
 
 
