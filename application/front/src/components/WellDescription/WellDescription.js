@@ -1,10 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import './WellDescription.css'
+import Loading from '../Loading/Loading'
 
-function WellDescription(props) {
+function WellDescription({fileName, startScrapping}) {
     const[wellDescription, setWellDescription] = useState([]);
+    const[loading, setLoading] = useState(true)
     useEffect(() => {
-            axios.get('http://127.0.0.1:8000/api/get_well_description/', {params : {file_name: '15_2-1__WELL__15-02-01_PB-706-0386.pdf'}})
+        if(startScrapping){
+            axios.get('http://127.0.0.1:8000/api/get_well_description/', {params : {file_name: fileName}})
             .then(function (response) {
                 setWellDescription(response.data)
             })
@@ -13,12 +17,20 @@ function WellDescription(props) {
             })
             .finally(() => {
                 console.log('finally')
-                //setLoading(false);
+                setLoading(false);
             });
-    }, []);
+        }
+    }, [startScrapping]);
     return (
-        <div>
-            {wellDescription}
+        <div className='description'>
+            {loading? 
+             <Loading></Loading> :
+            <>
+                <h2>Details</h2>
+                <span>Depth: {wellDescription.depth}</span>
+                <span>Description: {wellDescription.description}</span>
+            </>
+            }
         </div>
     );
 }

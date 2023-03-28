@@ -6,7 +6,7 @@ import disabled_play_btn from '../../assets/disabled_play_btn.svg'
 import axios from 'axios';
 
 
-function BlockLeft({fileName, setFileName}) {
+function BlockLeft({setFileName, setStartScrapping}) {
     const [uploadedFileName, setUploadedFileName] = useState("Upload New");
     const [uploadedFile, setUploadedFile] = useState();
     const [fileList, setFileList] = useState([]);
@@ -103,7 +103,7 @@ function BlockLeft({fileName, setFileName}) {
             {uploadedFileName == "Upload New" && selectedFile == ''?  
                 <img className='disabled-play-btn' src={disabled_play_btn} alt='disabled play btn'/>:
             <a className='play-btn' href='#results'>
-                <img src={play_btn} alt='play btn'/> 
+                <img src={play_btn} alt='play btn' onClick={()=>setStartScrapping(true)}/> 
             </a>
             }
         </div>

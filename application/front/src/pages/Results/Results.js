@@ -6,7 +6,7 @@ import WellComposition from '../../components/WellComposition/WellComposition';
 import Map from '../../components/Map/Map';
 import Svg from '../../components/Svg/Svg'
 
-function Results({fileName}) {
+function Results({fileName, startScrapping}) {
     
     // const data2 = [
     //     { value: 10, label: 'apples', color: '#ffc800' }, 
@@ -22,10 +22,10 @@ function Results({fileName}) {
         </a>
             <div className='results-main'>
             <div className='map_and_description'>
-                <Map fileName={fileName}></Map>
-                <WellDescription></WellDescription>
+                <Map fileName={fileName} startScrapping={startScrapping}></Map>
+                <WellDescription fileName={fileName} startScrapping={startScrapping}></WellDescription>
             </div>
-            <WellComposition></WellComposition>
+            <WellComposition fileName={fileName} startScrapping={startScrapping}></WellComposition>
             </div>
            
         </div>

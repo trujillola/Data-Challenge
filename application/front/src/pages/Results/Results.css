@@ -4,6 +4,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+ 
 }
 
 .results-main{
@@ -21,5 +22,6 @@
     justify-content: center;
     align-items: center;
     width: 45%;
-    height: 70%;
+    /* height: 70%; */
+    gap: 25px;
 }

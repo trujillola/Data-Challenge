@@ -134,4 +134,4 @@ dmypy.json
 # Data
 
 application/backend/app/data/
-
+application/backend/app/model/model_demo.h5

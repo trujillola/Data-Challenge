@@ -39,7 +39,6 @@ async def create_upload_file(uploaded_file: UploadFile):
     return launcher.upload_file(uploaded_file)
 
 
-
 @router.get("/get_well_composition/")
 async def get_well_composition(file_name : str):
     """Get the composition of a well given its name 
@@ -59,9 +58,14 @@ async def get_well_composition(file_name : str):
     # --color-blue : #009bff;
     # --color-dark-blue : #285aff;
     # --color-red: #ff0000;
-    dict_composition = [{ 'value': 10, 'label': 'sand', 'color': '#ffc800' }, 
-        { 'value': 20, 'label': 'clay', 'color': '#28c896'  },
-        { 'value': 90, 'label': 'stone', 'color': '#96e600'  }]
+    tab_labels, tab_valeurs = launcher.get_composition(file_name)
+    tab_colors = ['#ffc800', '#96e600', '#28c896', '#32c8c8', '#009bff']
+    # dict_composition = [{ 'value': 10, 'label': 'sand', 'color': '#ffc800' }, 
+    #     { 'value': 20, 'label': 'clay', 'color': '#28c896'  },
+    #     { 'value': 90, 'label': 'stone', 'color': '#96e600'  }]
+    dict_composition = []
+    for i in range(len(tab_labels)):
+        dict_composition.append({'value': tab_valeurs[i], 'label': tab_labels[i], 'color': tab_colors[i]})
     return dict_composition
 
 
@@ -77,7 +81,10 @@ async def get_well_description(file_name : str):
         description : string of the description of the well
 
     """
-    description = "une petite description"
+
+
+    description = launcher.get_well_description(file_name)
+
     return description
 
 
@@ -93,8 +100,12 @@ async def get_well_position(file_name : str):
         position : 
 
     """
-    position = {'name' : 'Pau', 'coordinates': [1, 58] }
-    return position
+
+    #position = {'name' : 'Pau', 'coordinates': [1, 58] }
+
+    position = launcher.get_well_position(file_name)
+    #print("position = ", position['NS'].split('°')[0])
+    return {'name': '', 'coordinates': [position['EW'].split('°')[0], position['NS'].split('°')[0]]}
 
 
 @router.post("/update_well_name/")

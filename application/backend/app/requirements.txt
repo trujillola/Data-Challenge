@@ -4,3 +4,6 @@ pandas
 fastapi
 pytest
 pytest-cov
+webdriver_manager
+selenium
+codecarbon
