@@ -1,8 +1,18 @@
 .results{
     height: 100vh;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+
+.results-main{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100vw;
+    height: 70%;
 }
 
 .map_and_description{
@@ -11,4 +21,5 @@
     justify-content: center;
     align-items: center;
     width: 45%;
+    height: 70%;
 }

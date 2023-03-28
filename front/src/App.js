@@ -1,18 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import Home from './pages/Home/Home';
 import Results from './pages/Results/Results';
 
-class App extends Component {
-  render() {
+function App() {
+    const [fileName, setFileName] = useState("Upload New"); 
     return (
       <div className="App">
-        <Home></Home>
-        <Results></Results>
+        <Home setFileName={setFileName}></Home>
+        <Results fileName={fileName}></Results>
       </div>
     );
   }
-}
 
 export default App;

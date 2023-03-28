@@ -10,12 +10,12 @@ import {
   } from "react-simple-maps";
 import axios from 'axios';
 
-function Map(props) {
+function Map({fileName}) {
     const color = [ "#ff0000", "#ffc800", "#96e600", "#28c896", "#32c8c8", "#009bff", "#285aff"];
     const [wellPosition, setWellPosition] = useState({name : 'Pau', coordinates: [-0.370797, 43.2951] })
-
+    console.log("filename = ", fileName)
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/get_well_position/', {params : {file_name: '15_2-1__WELL__15-02-01_PB-706-0386.pdf'}})
+        axios.get('http://127.0.0.1:8000/api/get_well_position/', {params : {file_name: fileName}})
         .then(function (response) {
             setWellPosition(response.data)
         })

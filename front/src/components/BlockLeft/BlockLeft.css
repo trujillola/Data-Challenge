@@ -72,10 +72,17 @@ select option{
     align-self: center;
 }
 
-.play_btn{
+.play-btn{
     width: 25%;
     align-self: center;
 }
+
+.disabled-play-btn{
+    width: 25%;
+    align-self: center;
+    cursor: default;
+}
+
 
 
 label{

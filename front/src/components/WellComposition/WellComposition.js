@@ -23,7 +23,7 @@ function WellComposition(props) {
   
     return (
         <div className="piechart">
-            <Pie3D config={{size: 0.4, ir: 0, height: 60, angle: 60, strokeWidth:5}} data={wellComposition} />
+            <Pie3D config={{size: 0.8, ir: 0, height: 60, angle: 60, strokeWidth:5}} data={wellComposition} />
         </div>
           
         );
