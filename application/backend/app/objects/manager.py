@@ -1,23 +1,80 @@
 from dataclasses import dataclass
-from fastapi import UploadFile
+from fastapi import UploadFile, File
 import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
+import cv2
 
 
 @dataclass
-class File():
+class Lithologie():
     """
-        Describe the File Class
+        Describe the lithologie Class
     """
 
-
-    def __init__(self):
+    litho_name : str
+    litho_dir : str
+    litho_stones_dir : str
+    documents_dir : str = "./app/data/NO_Quad_15/"
+    results_dir : str = "./app/data/results/"
+    
+    def __init__(self, litho_name):
         """
             Initailize a new Wine Class with its parameters
         """
-        return
-    
+        self.litho_name = litho_name
+        self.litho_dir = self.results_dir+litho_name.split("__")[0]+"/"
+        self.litho_stones_dir = self.litho_dir+"stones/"
+        
+
+    def split_litho(self):
+        """
+            Returns the litho images
+        """        
+        print(self.litho_dir)
+        image = cv2.imread(self.litho_dir+'completion_log.png')
+        result = image.copy()
+
+        # Convert to grayscale and apply Otsu's thresholding
+        gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+        thresh = cv2.threshold(gray,0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+
+        # Detect horizontal lines
+        horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (40,1))
+        detect_horizontal = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=1)
+        detect_horizontal = cv2.dilate(detect_horizontal,horizontal_kernel,iterations = 1)
+        cnts = cv2.findContours(detect_horizontal, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+        for c in cnts:
+            cv2.drawContours(result, [c], 0, (36,255,12), 1)
+
+        # Save the split image
+        cv2.imwrite(self.litho_dir+"split.png", result)
+
+        # Delete stone directory and recreate it directory to store cropped images
+        if os.path.exists(self.litho_stones_dir):
+            for file_name in os.listdir(self.litho_stones_dir):
+                file = self.litho_stones_dir + file_name
+                os.remove(file)
+        else : 
+            os.makedirs(self.litho_stones_dir)
+        
+        # # Find maximum and minimum of x coordinates 
+        x_start = 0
+        x_end = image.shape[1]
+
+        # Find maximum and minimum of y coordinates for each block of stones
+        y_top = cnts[0][0][0][1]
+        y_end = image.shape[0]
+        cv2.imwrite(self.litho_stones_dir+str(0)+".png", image[y_top:y_end, x_start:x_end])
+        for i in range(len(cnts)-1):
+            y_end = cnts[i][0][0][1]
+            y_top= cnts[i+1][0][0][1]
+            cv2.imwrite(self.litho_stones_dir+str(i+1)+".png", image[y_top:y_end, x_start:x_end])
+        y_end = cnts[len(cnts)-1][0][0][1]
+        y_top = 1
+        if y_end - y_top > 0:
+            cv2.imwrite(self.litho_stones_dir+str(len(cnts))+".png", image[y_top:y_end, x_start:x_end])
 
 
 class Datasets:

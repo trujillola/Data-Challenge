@@ -1,6 +1,6 @@
-from app.objects.manager import FileManager, File
-from fastapi import UploadFile
-from app.model.model import OCRmodel
+from app.objects.manager import FileManager, Lithologie
+from fastapi import UploadFile, File
+from app.model.model import ResNetModel
 import numpy as np
 import pandas as pd
 import os
@@ -11,7 +11,7 @@ class Launcher:
     """
 
     file_manager : FileManager
-    model : OCRmodel
+    model : ResNetModel
 
     def __init__(self):
         """
@@ -19,8 +19,9 @@ class Launcher:
             params : file path of model and list of Wines
         """ 
         self.file_manager = FileManager()
+        self.model = ResNetModel("./app/model/model_demo.h5")
 
-    def get_composition(self, file : File):
+    def get_composition(self, file_name : str):
         """
             Get the composition of the well based on a file
 
@@ -28,7 +29,7 @@ class Launcher:
 
             Returns: the dictionnary of the compositions
         """ 
-        return self.model.composition(file)
+        return self.model.composition(file_name)
 
     def get_files_list(self):
         """
