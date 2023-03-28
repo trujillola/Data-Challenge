@@ -50,7 +50,18 @@ async def get_well_composition(file_name : str):
     Returns:
         dict_composition : a dictionnary of the composition of the well
     """
-    dict_composition = {"sand" : 10, "clay" : 20 , "stone" : 90}
+    #dict_composition = {"sand" : 10, "clay" : 20 , "stone" : 90}
+    # colors : ['#ffc800', '#96e600', '#28c896', '#32c8c8', '#009bff', '#285aff', '#ff0000']
+    # --color-yellow : #ffc800;
+    # --color-light-green : #96e600;
+    # --color-green : #28c896;
+    # --color-light-blue: #32c8c8;
+    # --color-blue : #009bff;
+    # --color-dark-blue : #285aff;
+    # --color-red: #ff0000;
+    dict_composition = [{ 'value': 10, 'label': 'sand', 'color': '#ffc800' }, 
+        { 'value': 20, 'label': 'clay', 'color': '#28c896'  },
+        { 'value': 90, 'label': 'stone', 'color': '#96e600'  }]
     return dict_composition
 
 

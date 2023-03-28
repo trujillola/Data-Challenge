@@ -1,0 +1,13 @@
+:root {
+    --primary-color-white: #FFFFFF;
+    --color-grey: #ececec;
+    /*colors*/
+    --color-yellow : #ffc800;
+    --color-light-green : #96e600;
+    --color-green : #28c896;
+    --color-light-blue: #32c8c8;
+    --color-blue : #009bff;
+    --color-dark-blue : #285aff;
+    --color-red: #ff0000;
+    /*gradient colors*/
+}
