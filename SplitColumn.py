@@ -38,11 +38,11 @@ if not os.path.exists(dir+"stones/"):
 
 # # Find maximum and minimum of x coordinates 
 x_start = 0
-x_end = 42
+x_end = image.shape[1]
 # Find maximum and minimum of y coordinates for each block of stones
 y_top = cnts[0][0][0][1]
 y_end = image.shape[0]
-cv2.imwrite(dir+str(0)+".png", image[y_top:y_end, x_start:x_end])
+cv2.imwrite(dir+"stones/"+str(0)+".png", image[y_top:y_end, x_start:x_end])
 for i in range(len(cnts)-1):
     y_end = cnts[i][0][0][1]
     y_top= cnts[i+1][0][0][1]
