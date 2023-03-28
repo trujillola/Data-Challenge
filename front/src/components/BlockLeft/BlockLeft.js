@@ -46,27 +46,28 @@ function BlockLeft(props) {
    
     
     useEffect(() => {
-        var bodyFormData = new FormData();
-        bodyFormData.append('uploaded_file', uploadedFile);
-        axios({
-            method: "post",
-            url: "http://127.0.0.1:8000/api/upload_file/",
-            data: bodyFormData,
-            headers: { "Content-Type": "multipart/form-data" },
-          })
-            .then(function (response) {
-                //setFileList(response.data)
-                console.log("coucou");
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .finally(() => {
-                console.log('finally')
-                //setLoading(false);
-            });
-        console.log("laaaa");
+        if (fileName != 'Upload New') {
+            var bodyFormData = new FormData();
+            bodyFormData.append('uploaded_file', uploadedFile);
+            axios({
+                method: "post",
+                url: "http://127.0.0.1:8000/api/upload_file/",
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" },
+              })
+                .then(function (response) {
+                    //setFileList(response.data)
+                    console.log("coucou");
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+                .finally(() => {
+                    console.log('finally')
+                    //setLoading(false);
+                });
+        }
     }, [fileName]);
 
     return (
@@ -92,8 +93,6 @@ function BlockLeft(props) {
                 </label>
             </div>
             <img className='dots' src={dots} alt='dots'/>
-            {fileName}
-            {uploadedFile instanceof File ? " yes it's a file" : " no it's not a file"}
             <a className='play_btn' href='#main'><img src={play_btn} alt='play btn'/></a>
         </div>
     );
