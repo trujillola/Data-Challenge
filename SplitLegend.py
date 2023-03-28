@@ -4,7 +4,7 @@ import numpy as np
 import pytesseract
 import matplotlib.pyplot as plt
 from imutils.object_detection import non_max_suppression
-
+import os
 
 dir = './NO_Quad_15/15_3-4/'
 
@@ -32,8 +32,8 @@ cv2.morphologyEx(image, cv2.MORPH_OPEN,np.ones((5,5),np.uint8))
 contours, hierarchy = cv2.findContours(blur, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 #Template 
-template = cv2.imread(dir+'template.png', cv2.IMREAD_GRAYSCALE)
-pattern = cv2.imread(dir+'template.png')
+# template = cv2.imread(dir+'template.png', cv2.IMREAD_GRAYSCALE)
+# pattern = cv2.imread(dir+'template.png')
 
 #METHODE AVEC SIFT
 
@@ -81,42 +81,57 @@ pattern = cv2.imread(dir+'template.png')
 # cv2.destroyAllWindows()
 
 # METHODE AVEC MATCHTEMPLATE
-res = cv2.matchTemplate(thresh,template,cv2.TM_SQDIFF_NORMED)
-loc = np.where( res <= 0.6)
-loc = list(zip(*loc[::-1]))
-w,h = template.shape[::-1]
-occurrences = list()
-for i in range(4):
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-    if max_val > 0.8:
-        occurrences.append(max_loc)
-        res[max_loc[1]:max_loc[1]+h, max_loc[0]:max_loc[0]+w] = 0
+# res = cv2.matchTemplate(thresh,template,cv2.TM_SQDIFF_NORMED)
+# loc = np.where( res <= 0.6)
+# loc = list(zip(*loc[::-1]))
+# w,h = template.shape[::-1]
+# occurrences = list()
+# for i in range(4):
+#     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+#     if max_val > 0.8:
+#         occurrences.append(max_loc)
+#         res[max_loc[1]:max_loc[1]+h, max_loc[0]:max_loc[0]+w] = 0
 
-for pt in occurrences:
-    cv2.rectangle(img, pt,(pt[0]+w, pt[1] +h), (0, 0, 255), 2)
-cv2.imshow('Template', img)
-cv2.waitKey(0)
+# for pt in occurrences:
+#     cv2.rectangle(img, pt,(pt[0]+w, pt[1] +h), (0, 0, 255), 2)
+# cv2.imshow('Template', img)
+# cv2.waitKey(0)
 
 
 # Extraire les rectangles de l'image en utilisant les contours trouvés
-# boxes = []
-# for contour in contours:
-#     # Calculer l'aire du contour
-#     area = cv2.contourArea(contour)
+
+#Création directory
+if not os.path.exists(dir+'legende/'):
+    os.makedirs(dir+'legende/')
+
+boxes = []
+i = 0
+for contour in contours:
+
+    # Calculer l'aire du contour
+    area = cv2.contourArea(contour)
    
-#     # Ignorer les contours trop petits ou trop grands
-#     if area < 4000 or area > 80000:
-#          continue
+    # Ignorer les contours trop petits ou trop grands
+    if area < 4000 or area > 80000:
+         continue
 
-#     # Trouver le rectangle qui englobe le contour
-#     rect = cv2.minAreaRect(contour)
-#     box = cv2.boxPoints(rect)
-#     box = box.astype('int')
+    # Trouver le rectangle qui englobe le contour
+    rect = cv2.minAreaRect(contour)
+    box = cv2.boxPoints(rect)
+    box = box.astype('int')
 
-#     cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
+    # Enregistrer l'image du rectangle
+    print("oui")
+    x, y, w, h = cv2.boundingRect(contour)
+    roi = img[y:y + h, x:x + w]
+    cv2.imwrite(dir+'legende/'+str(i)+'.png', roi)
+
+    i = i + 1
+    # Dessiner le rectangle sur l'image
+    cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
     
 
-# # Afficher l'image avec les rectangles extraits
-# cv2.imshow('Legende avec les rectangles extraits', img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+# Afficher l'image avec les rectangles extraits
+cv2.imshow('Legende avec les rectangles extraits', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

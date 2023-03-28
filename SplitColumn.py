@@ -5,6 +5,7 @@
 # 4. Gérer le cas où la légende contient des lignes horizontales
 
 import cv2
+import os
 
 dir = './NO_Quad_15/15_3-4/'
 
@@ -31,6 +32,10 @@ cv2.imwrite(dir+"split.png", result)
 
 ## CROP IMAGES
 
+#Create directory to store cropped images
+if not os.path.exists(dir+"stones/"):
+    os.makedirs(dir+"stones/")
+
 # # Find maximum and minimum of x coordinates 
 x_start = 0
 x_end = 42
@@ -41,7 +46,7 @@ cv2.imwrite(dir+str(0)+".png", image[y_top:y_end, x_start:x_end])
 for i in range(len(cnts)-1):
     y_end = cnts[i][0][0][1]
     y_top= cnts[i+1][0][0][1]
-    cv2.imwrite(dir+str(i+1)+".png", image[y_top:y_end, x_start:x_end])
+    cv2.imwrite(dir+"stones/"+str(i+1)+".png", image[y_top:y_end, x_start:x_end])
 y_end = cnts[len(cnts)-1][0][0][1]
 y_top = 1
 if y_end - y_top > 0:
