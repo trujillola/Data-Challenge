@@ -4,7 +4,7 @@ import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
 import cv2
-
+import numpy as np
 from bs4 import BeautifulSoup
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -98,6 +98,17 @@ class Lithologie():
         print(self.scrapper.getContent(litho_name.split("__")[0]))
         self.infos = self.scrapper.getContent(litho_name.split("__")[0])
         
+    # def fuse_small_rectangles(self, cnts):
+    #     fused_cnts = []
+    #     for i in range(len(cnts)):
+    #         if i == 0 :
+    #             fused_cnts.append(cnts[i])
+    #         else:
+    #             if cnts[i][0][0][1] - fused_cnts[-1][0][0][1] < 10:
+    #                 fused_cnts[-1] = np.concatenate((fused_cnts[-1], cnts[i]), axis=0)
+    #             else:
+    #                 fused_cnts.append(cnts[i])
+    #     return fused_cnts
 
     def split_litho(self):
         """
@@ -117,6 +128,10 @@ class Lithologie():
         detect_horizontal = cv2.dilate(detect_horizontal,horizontal_kernel,iterations = 1)
         cnts = cv2.findContours(detect_horizontal, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+
+        # Fuse rectangles that are too small and follow each other
+        # cnts = self.fuse_small_rectangles(cnts)
+
         for c in cnts:
             cv2.drawContours(result, [c], 0, (36,255,12), 1)
 

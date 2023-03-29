@@ -43,7 +43,9 @@ class ResNetModel:
         class_predictions = {m: 0 for m in self.class_labels}
         # Get the list of images
         image_files = glob.glob(stones_directory + "/*.png")
+        print(image_files)
         for image_file in image_files:
+            print(image_file)
             # Find image height
             img_original_size = Image.open(image_file)
             height = img_original_size.height
@@ -57,8 +59,10 @@ class ResNetModel:
             preds = self.model.predict(x)
             class_idx = np.argmax(preds[0])
             predicted_label = self.class_labels[class_idx]
+            print("Predicted : ", predicted_label)
             class_predictions[predicted_label] += 1
             heights[predicted_label].append(valeur_relative)
+        print(heights)
         return class_predictions, heights
 
     def create_excel(self, litho_dir : str, heights : dict, class_predictions : dict):
@@ -165,8 +169,6 @@ class ResNetModel:
         litho.split_litho()
         stones_directory = litho.litho_stones_dir
         class_predictions, heights = self.predict(stones_directory)
-        print(class_predictions)
-        print(heights)
         self.create_excel(litho.litho_dir,heights,class_predictions)
         noms, valeurs = self.get_composition_from_excel(litho.litho_dir)
         return noms, valeurs
