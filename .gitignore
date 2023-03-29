@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Bdd images de légengde rognées par mathis
+motifs_legende/*
