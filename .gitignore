@@ -135,4 +135,4 @@ Siamese_Net/data/
 # Data
 
 application/backend/app/data/
-
+application/backend/app/model/model_demo.h5

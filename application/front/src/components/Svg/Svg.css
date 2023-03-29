@@ -1,0 +1,30 @@
+/* .path {
+    stroke-dasharray: 1150;
+    stroke-dashoffset: 100;
+    animation: dash 3s linear infinite;
+    animation-delay: 1.5s;
+  }
+  
+  @keyframes dash {
+    to {
+      stroke-dashoffset: 0;
+    }
+  } */
+
+  .path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dash 10s linear infinite;
+  }
+  
+  @keyframes dash {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes spin {
+    100% {
+      transform:rotate(1turn) translate(310px) rotate(-1turn);
+    }
+  }

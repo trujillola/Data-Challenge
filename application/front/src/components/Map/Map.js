@@ -9,13 +9,17 @@ import {
     ZoomableGroup
   } from "react-simple-maps";
 import axios from 'axios';
+import Loading from '../Loading/Loading'
 
-function Map(props) {
+function Map({fileName, startScrapping}) {
     const color = [ "#ff0000", "#ffc800", "#96e600", "#28c896", "#32c8c8", "#009bff", "#285aff"];
     const [wellPosition, setWellPosition] = useState({name : 'Pau', coordinates: [-0.370797, 43.2951] })
+    console.log("filename = ", fileName)
+    const[loading, setLoading] = useState(true)
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/get_well_position/', {params : {file_name: '15_2-1__WELL__15-02-01_PB-706-0386.pdf'}})
+      if(startScrapping){
+        axios.get('http://127.0.0.1:8000/api/get_well_position/', {params : {file_name: fileName}})
         .then(function (response) {
             setWellPosition(response.data)
         })
@@ -24,9 +28,10 @@ function Map(props) {
         })
         .finally(() => {
             console.log('finally')
-            //setLoading(false);
+            setLoading(false);
         });
-}, []);
+      }
+}, [startScrapping]);
 
     const markers = [
     {
@@ -38,13 +43,17 @@ function Map(props) {
 
    
     return (
+      <>
+      {loading? 
+             <Loading></Loading> :
+            
         <ComposableMap
         projection="geoMercator"
         projectionConfig={{
-            center: wellPosition.coordinates,
-            scale: 400
+          center: wellPosition.coordinates,
+          scale: 400
         }}
-      >
+        >
         <ZoomableGroup center={wellPosition.coordinates} zoom={1}>
         <Geographies geography={features}>
           {({ geographies }) =>
@@ -65,12 +74,12 @@ function Map(props) {
                       fill: "none",
                     },
                   }}
-              />
-            ))
-          }
+                  />
+                  ))
+                }
         </Geographies>
         {markers.map(({ name, coordinates, markerOffset }) => (
-        <Marker key={name} coordinates={coordinates}>
+          <Marker key={name} coordinates={coordinates}>
           <g
             fill="none"
             stroke="#ff0000"
@@ -88,13 +97,15 @@ function Map(props) {
             textAnchor="middle"
             y={markerOffset}
             style={{ fontFamily: "system-ui", fill: "#ff0000", fontSize: "18px" }}
-          >
+            >
             {name}
           </text>
         </Marker>
       ))}
       </ZoomableGroup>
       </ComposableMap>
+      }
+      </>
     );
   
 }

@@ -70,7 +70,7 @@ async def get_well_composition(file_name : str):
 
 
 @router.get("/get_well_description/")
-async def get_well_composition(file_name : str):
+async def get_well_description(file_name : str):
     """
         Get the description of a well given its name
 
@@ -81,7 +81,10 @@ async def get_well_composition(file_name : str):
         description : string of the description of the well
 
     """
+
+
     description = launcher.get_well_description(file_name)
+
     return description
 
 
@@ -97,8 +100,12 @@ async def get_well_position(file_name : str):
         position : 
 
     """
+
+    #position = {'name' : 'Pau', 'coordinates': [1, 58] }
+
     position = launcher.get_well_position(file_name)
-    return position
+    #print("position = ", position['NS'].split('°')[0])
+    return {'name': '', 'coordinates': [position['EW'].split('°')[0], position['NS'].split('°')[0]]}
 
 
 @router.post("/update_well_name/")

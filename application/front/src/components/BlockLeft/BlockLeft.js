@@ -2,18 +2,21 @@ import React, { useState, useEffect } from 'react';
 import './BlockLeft.css'
 import dots from '../../assets/dots.png'
 import play_btn from '../../assets/play_btn.svg'
+import disabled_play_btn from '../../assets/disabled_play_btn.svg'
 import axios from 'axios';
 
 
-function BlockLeft(props) {
-    const [fileName, setFileName] = useState("Upload New");
+function BlockLeft({setFileName, setStartScrapping}) {
+    const [uploadedFileName, setUploadedFileName] = useState("Upload New");
     const [uploadedFile, setUploadedFile] = useState();
     const [fileList, setFileList] = useState([]);
     //const axios = require("axios")
     function handleChange(event) {
-        setFileName(event.target.files[0].name)
-        setUploadedFile(event.target.files[0])
-        console.log(fileName)
+        setUploadedFileName(event.target.files[0].name);
+        setUploadedFile(event.target.files[0]);
+        console.log(uploadedFileName);
+        setFileName(event.target.files[0].name);
+        setSelectedFile('')
       }
     //listReactFiles("../../../../NO_Quad_15").then(files => console.log(files))
 
@@ -22,6 +25,10 @@ function BlockLeft(props) {
     function handleFileChange(event) {
       const file = event.target.value;
       setSelectedFile(file);
+      setFileName(file);
+      setUploadedFileName("Upload New");
+      setUploadedFile();
+      console.log("file = ", file)
     }
   
    // const fileList = ['fichier1.pdf', 'fichier2.pdf', 'fichier3.pdf'];
@@ -46,7 +53,7 @@ function BlockLeft(props) {
    
     
     useEffect(() => {
-        if (fileName != 'Upload New') {
+        if (uploadedFileName != 'Upload New') {
             var bodyFormData = new FormData();
             bodyFormData.append('uploaded_file', uploadedFile);
             axios({
@@ -68,7 +75,7 @@ function BlockLeft(props) {
                     //setLoading(false);
                 });
         }
-    }, [fileName]);
+    }, [uploadedFileName]);
 
     return (
         <div className='block-left'>
@@ -78,7 +85,7 @@ function BlockLeft(props) {
                 {/* <button className='btn-select'>Select completion log</button> */}
 
             
-                <select disabled={fileName !== 'Upload New'? true : false} id="file-select" className={fileName !== 'Upload New'? 'btn-select-disabled':'btn-select'} value={selectedFile} onChange={handleFileChange}>
+                <select  id="file-select" className='btn-select' value={selectedFile} onChange={handleFileChange}>
                     <option value="">-- Select completion log --</option>
                     {fileList.map((file) => (
                     <option key={file} value={file}>
@@ -87,13 +94,18 @@ function BlockLeft(props) {
                     ))}
                 </select>
  
-                <label className={selectedFile !== ''? 'btn-upload-disabled':'btn-upload'} > 
-                    <span>{fileName}</span>
-                    <input disabled={selectedFile !== ''? true : false} className='btn-upload' type="file" name="upload" accept="application/pdf" placeholder='Upload New' onChange={handleChange}/>
+                <label className='btn-upload'> 
+                    <span>{uploadedFileName}</span>
+                    <input className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload New' onChange={handleChange}/>
                 </label>
             </div>
             <img className='dots' src={dots} alt='dots'/>
-            <a className='play_btn' href='#main'><img src={play_btn} alt='play btn'/></a>
+            {uploadedFileName == "Upload New" && selectedFile == ''?  
+                <img className='disabled-play-btn' src={disabled_play_btn} alt='disabled play btn'/>:
+            <a className='play-btn' href='#results'>
+                <img src={play_btn} alt='play btn' onClick={()=>setStartScrapping(true)}/> 
+            </a>
+            }
         </div>
     );
 }

@@ -4,8 +4,9 @@ import '../../styles/colors.css'
 import WellDescription from '../../components/WellDescription/WellDescription';
 import WellComposition from '../../components/WellComposition/WellComposition';
 import Map from '../../components/Map/Map';
+import Svg from '../../components/Svg/Svg'
 
-function Results(props) {
+function Results({fileName, startScrapping}) {
     
     // const data2 = [
     //     { value: 10, label: 'apples', color: '#ffc800' }, 
@@ -15,12 +16,18 @@ function Results(props) {
     //   ]
 
     return (
-        <div className='results' id='main'> 
+        <div className='results' id='results'> 
+        <a href='#home'>
+            <Svg></Svg>
+        </a>
+            <div className='results-main'>
             <div className='map_and_description'>
-                <Map></Map>
-                <WellDescription></WellDescription>
+                <Map fileName={fileName} startScrapping={startScrapping}></Map>
+                <WellDescription fileName={fileName} startScrapping={startScrapping}></WellDescription>
             </div>
-            <WellComposition></WellComposition>
+            <WellComposition fileName={fileName} startScrapping={startScrapping}></WellComposition>
+            </div>
+           
         </div>
     );
 }

@@ -3,11 +3,11 @@ import './Home.css';
 import Header from '../../components/Header/Header';
 import Main from '../../components/Main/Main';
 
-function Home(props) {
+function Home({setFileName, setStartScrapping}) {
     return (
-        <div className='home'>
+        <div className='home' id='home'>
             <Header></Header>
-            <Main></Main>
+            <Main setFileName={setFileName} setStartScrapping={setStartScrapping}></Main>
         </div> 
     );
 }

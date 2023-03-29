@@ -11,12 +11,21 @@ from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
 import time
 
+from selenium.webdriver.chrome.options import Options
 
 class ScrapeContent:
 
     def __init__(self):
+
+
+        #driver_exe = 'chromedriver'
+        options = Options()
+        options.add_argument("--headless")
+        # self.driver = webdriver.Chrome(driver_exe, options=options)
+
         s=Service(ChromeDriverManager().install())
-        self.driver = webdriver.Chrome(service=s)
+        self.driver = webdriver.Chrome(service=s, options=options)
+
 
         self.driver.get("https://factpages.npd.no/en/wellbore/PageView/Exploration/All")
 
