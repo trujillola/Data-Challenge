@@ -113,7 +113,10 @@ class Lithologie():
             Returns the litho images
         """        
         print(self.litho_dir)
-        image = cv2.imread(self.litho_dir+'completion_log.png')
+        image = cv2.imread('./app/data/results/completion_log.png')
+        print('55555555555555555550')
+        print(image)
+        print('55555555555554')
         result = image.copy()
 
         # Convert to grayscale and apply Otsu's thresholding
@@ -183,11 +186,17 @@ class FileManager:
         """
         """
         file_directory = uploaded_file.filename.split("__")[0]
-        if not os.path.exists(self.dir+"/"+file_directory):
-            os.mkdir(self.dir+"/"+file_directory)
-        file_location = self.dir+"/"+file_directory+"/"+uploaded_file.filename
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print(file_directory)
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print(self.dir)
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        if not os.path.exists("./app/data/results/"): #self.dir
+            os.mkdir("./app/data/results/")
+        file_location = "./app/data/results/"+uploaded_file.filename
         with open(file_location, "wb+") as file_object:
             file_object.write(uploaded_file.file.read())
+        os.rename("./app/data/results/"+uploaded_file.filename, "./app/data/results/completion_log.png")
         return {"info": f"file '{uploaded_file.filename}' saved at '{file_location}'"}
     
     def get_files_list(self):

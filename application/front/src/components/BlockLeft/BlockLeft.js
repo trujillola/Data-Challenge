@@ -15,8 +15,8 @@ function BlockLeft({setFileName, setStartScrapping}) {
         setUploadedFileName(event.target.files[0].name);
         setUploadedFile(event.target.files[0]);
         console.log(uploadedFileName);
-        setFileName(event.target.files[0].name);
-        setSelectedFile('')
+       // setFileName(event.target.files[0].name);
+        //setSelectedFile('')
       }
     //listReactFiles("../../../../NO_Quad_15").then(files => console.log(files))
 
@@ -25,9 +25,9 @@ function BlockLeft({setFileName, setStartScrapping}) {
     function handleFileChange(event) {
       const file = event.target.value;
       setSelectedFile(file);
-      setFileName(file);
-      setUploadedFileName("Upload New");
-      setUploadedFile();
+      setFileName(file); 
+    //   setUploadedFileName("Upload New");
+    //   setUploadedFile();
       console.log("file = ", file)
     }
   
@@ -78,29 +78,29 @@ function BlockLeft({setFileName, setStartScrapping}) {
     }, [uploadedFileName]);
 
     return (
-        <div className='block-left'>
+        <div className='block-left'> 
             <h1>Completion logs</h1>
-            <p>A thoughtful combination of design and function to support your everyday movement. Limited stocks. Shop now.</p>
+            <p>Enter the name of the well on the left and the corresponding lithologie on the right.</p>
             <div className='btn'>
                 {/* <button className='btn-select'>Select completion log</button> */}
-
+                <input className='btn-input' placeholder="15_3-2"  value={selectedFile} onChange={handleFileChange}></input>
             
-                <select  id="file-select" className='btn-select' value={selectedFile} onChange={handleFileChange}>
+                {/* <select  id="file-select" className='btn-select' value={selectedFile} onChange={handleFileChange}>
                     <option value="">-- Select completion log --</option>
                     {fileList.map((file) => (
                     <option key={file} value={file}>
                         {file}
                     </option>
                     ))}
-                </select>
+                </select> */}
  
                 <label className='btn-upload'> 
                     <span>{uploadedFileName}</span>
-                    <input className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload New' onChange={handleChange}/>
+                    <input id='input' className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload New' onChange={handleChange}/>
                 </label>
             </div>
             <img className='dots' src={dots} alt='dots'/>
-            {uploadedFileName == "Upload New" && selectedFile == ''?  
+            {uploadedFileName == "Upload New" || selectedFile == ''?  
                 <img className='disabled-play-btn' src={disabled_play_btn} alt='disabled play btn'/>:
             <a className='play-btn' href='#results'>
                 <img src={play_btn} alt='play btn' onClick={()=>setStartScrapping(true)}/> 

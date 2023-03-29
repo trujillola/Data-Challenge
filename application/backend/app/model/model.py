@@ -74,14 +74,15 @@ class ResNetModel:
         wb = openpyxl.Workbook()
         ws = wb.active
 
+
         # Ajouter les hauteurs relatives pour chaque matériau dans le tableur
         for i, m in enumerate(self.class_labels):
             # Ajouter le nom du matériau dans la première colonne
             ws.cell(row=i+2, column=1, value=m)
 
-        # Ajouter les hauteurs relatives dans les colonnes suivantes
-        for j, h in enumerate(heights[m]):
-            ws.cell(row=i+2, column=j+2, value=h)
+            # Ajouter les hauteurs relatives dans les colonnes suivantes
+            for j, h in enumerate(heights[m]):
+                ws.cell(row=i+2, column=j+2, value=h)
 
         # Ajouter la ligne des totaux en bas
         #for j in range(2, 7):
@@ -165,10 +166,14 @@ class ResNetModel:
         litho.split_litho()
         stones_directory = litho.litho_stones_dir
         class_predictions, heights = self.predict(stones_directory)
+        print('******************************')
         print(class_predictions)
+        print('******************************')
         print(heights)
+        print('******************************')
         self.create_excel(litho.litho_dir,heights,class_predictions)
         noms, valeurs = self.get_composition_from_excel(litho.litho_dir)
+        print("noms, valuers = ", noms, "valeurs ", valeurs)
         return noms, valeurs
     
 

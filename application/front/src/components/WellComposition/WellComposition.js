@@ -24,7 +24,9 @@ function WellComposition({fileName, startScrapping}) {
         }
     }, [startScrapping]);
 
- 
+    // const [dict_composition, setDictComposition] = useState([{ 'value': 93.35, 'label': 'sand', 'color': '#ffc800' }, 
+    //     { 'value': 18.35, 'label': 'sand_clay', 'color': '#28c896'  }])
+    //      //{ 'value': 90, 'label': 'stone', 'color': '#96e600'  }]
   
     return (
         <div className="piechart">

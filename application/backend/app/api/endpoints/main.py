@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, UploadFile
 from app.objects.launcher import Launcher
 
@@ -36,6 +37,13 @@ async def create_upload_file(uploaded_file: UploadFile):
     Returns:
         message: message error in case the upload failed of a success message.
     """
+    print("++++++++++++++++++++++++")
+    print("uploaded_file = ", uploaded_file.filename)
+    print("++++++++++++++++++++++++")
+    #os.rename(uploaded_file.filename, 'completion_logggg.png')
+    print("++++++++++++++++++++++++")
+    print("uploaded_file = ", uploaded_file.filename)
+    print("++++++++++++++++++++++++")
     return launcher.upload_file(uploaded_file)
 
 

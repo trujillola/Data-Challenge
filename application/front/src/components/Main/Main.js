@@ -1,5 +1,5 @@
 import React from 'react';
-import BlockLeft from '../BlockLeft/BlockLeft';
+import BlockLeft from '../BlockLeft/BlockLeft'
 import './Main.css'
 import img_total from "../../assets/mix_homepage.webp"
 
