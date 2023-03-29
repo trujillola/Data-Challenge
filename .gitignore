@@ -128,9 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
-./application/backend/data/
-
 NO_Quad_15/
 
 Siamese_Net/data/
+
+# Data
+
+application/backend/app/data/
+

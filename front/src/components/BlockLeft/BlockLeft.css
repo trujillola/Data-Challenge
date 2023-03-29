@@ -1,0 +1,112 @@
+.block-left{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.block-left h1{
+    font-size: 50px;
+    font-weight: 500;
+}
+
+.block-left p{
+    font-size: 17px;
+    width: 345px;
+}
+
+.btn{
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    justify-content: space-between;
+}
+/* 
+button{
+    width: 175px;
+    padding: 15px;
+    font-weight: bold;
+    border: 2px solid var(--color-green);
+} */
+
+select{
+    font-size: 14px;
+    width: 230px;
+    padding: 15px;
+    font-weight: bold;
+    border: 2px solid var(--color-green);
+    cursor: pointer;
+}
+
+select option{
+    border: 2px solid white;
+    font-size: 14px;
+}
+
+.btn-select{
+    background-color: var(--color-green);
+    color: var(--primary-color-white); 
+}
+
+.btn-upload{
+    background-color: var(--primary-color-white);
+    color: var(--color-green);
+    width: 200px;
+}
+
+.btn-select-disabled{
+    border: 2px solid grey;
+    background-color: grey;
+    color: black;
+    cursor: default;
+}
+
+.btn-upload-disabled{
+    border: 2px solid grey;
+    background-color: grey;
+    color: black;
+    cursor: default;
+}
+
+.dots{
+    width: 35%;
+    align-self: center;
+}
+
+.play_btn{
+    width: 25%;
+    align-self: center;
+}
+
+
+label{
+    width: 230px;
+    padding: 15px;
+    font-weight: bold;
+    border: 2px solid var(--color-green);
+    color: var(--color-green);
+    text-align: center;
+    cursor: pointer;
+}
+
+
+label:hover:after{
+content: "Upload New";
+}
+
+label:hover span{
+    display: none;
+    }
+
+input{
+    display: none;
+}
+
+/* input[type=file]::file-selector-button {
+    width: 175px;
+    padding: 15px;
+    font-weight: bold;
+    border: 2px solid var(--color-green);
+    background-color: var(--primary-color-white);
+    color: var(--color-green);
+    margin-right: 20px;
+} */
