@@ -40,7 +40,7 @@ async def create_upload_file(uploaded_file: UploadFile):
 
 
 @router.get("/get_well_composition/")
-async def get_well_composition(file_name : str):
+async def get_well_composition(file_name : str) :
     """Get the composition of a well given its name 
 
     Args:
@@ -58,7 +58,7 @@ async def get_well_composition(file_name : str):
     # --color-blue : #009bff;
     # --color-dark-blue : #285aff;
     # --color-red: #ff0000;
-    tab_labels, tab_valeurs = launcher.get_composition(file_name)
+    tab_labels, tab_valeurs = launcher.get_composition("15_2-1")
     tab_colors = ['#ffc800', '#96e600', '#28c896', '#32c8c8', '#009bff']
     # dict_composition = [{ 'value': 10, 'label': 'sand', 'color': '#ffc800' }, 
     #     { 'value': 20, 'label': 'clay', 'color': '#28c896'  },
