@@ -58,7 +58,7 @@ async def get_well_composition(file_name : str) :
     # --color-blue : #009bff;
     # --color-dark-blue : #285aff;
     # --color-red: #ff0000;
-    tab_labels, tab_valeurs = launcher.get_composition("15_2-1")
+    tab_labels, tab_valeurs = launcher.get_composition("15_3-4")
     tab_colors = ['#ffc800', '#96e600', '#28c896', '#32c8c8', '#009bff']
     # dict_composition = [{ 'value': 10, 'label': 'sand', 'color': '#ffc800' }, 
     #     { 'value': 20, 'label': 'clay', 'color': '#28c896'  },

@@ -437,7 +437,7 @@ class ResNetModel:
         # print(list_nombre)
         return list_nom, list_nombre
     
-    def composition(self,file_name : str):
+    def composition(self,well_name : str):
         """
             Get the composition of the well based on a file
 
@@ -445,8 +445,8 @@ class ResNetModel:
 
             Returns: the dictionnary of the compositions
         """ 
-        litho = Lithologie(file_name)
-        litho.split_litho()
+        litho = Lithologie()
+        litho.split_litho(well_name,"./app/data/results/"+well_name+"/","./app/data/results/"+well_name+"/stones")
         stones_directory = litho.litho_stones_dir
         class_predictions, heights = self.predict(stones_directory)
         self.create_excel(litho.litho_dir,heights,class_predictions)

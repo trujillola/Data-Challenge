@@ -1,4 +1,4 @@
-from app.objects.manager import FileManager, Lithologie, DataLoader
+from app.objects.manager import FileManager, Lithologie, DataLoader, LegendExtraction
 from fastapi import UploadFile, File
 from app.model.model import ResNetModel, SiameseNetwork
 import numpy as np
@@ -17,6 +17,8 @@ class Launcher:
     file_manager : FileManager
     path_separator = os.path.sep
     model : SiameseNetwork
+    lithologie : Lithologie
+    legend_extractor : LegendExtraction
 
     # Environment settings
     LOAD_DATA = True
@@ -46,6 +48,8 @@ class Launcher:
             params : file path of model and list of Wines
         """ 
         self.file_manager = FileManager()
+        self.legend_extractor = LegendExtraction()
+        self.lithologie = Lithologie()
         
         # files paths
         self.dataloader = DataLoader(self.WIDTH, self.HEIGHT, self.CEELS, self.data_path, self.output_path)
@@ -69,17 +73,35 @@ class Launcher:
             Returns: the dictionnary of the compositions
         """ 
         
+        # Extract the patterns from the legend
+        legend_path = os.path.join(self.data_path, well_name, "legend.png")
+
+        legend_output_folder = os.path.join(self.data_path, well_name, "legend/")
+        self.legend_extractor.extract_patterns_from_legend(legend_path, legend_output_folder)
+
         # Get the dictionnary with the legend images
         legend_patterns = self.dataloader.load_from_dir(well_name, legend=True)
-        
+
+        # Extract the patterns from the lithology
+        litho_path = os.path.join(self.data_path, well_name, "completion_log.png")
+        litho_output_path = os.path.join(self.data_path, well_name, "stones/")
+
+        self.lithologie.split_litho(well_name, litho_path, litho_output_path)
+        print("Legend : ",legend_patterns)
+
         # Get the dictionnary with the litho images
         litho = self.dataloader.load_from_dir(well_name, legend=False)
 
         # Get the prediction for each image
         litho_predictions = {}
         for key in litho:
-            litho_predictions[key] = self.model.predict_stone_class(litho[key], legend_patterns)
-        
+            print(key)
+            # litho_predictions[key] = self.model.predict_stone_class(litho[key], legend_patterns)
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """        
         return {"oui": 1, "non" : 2}
 
     def run_siamese(self) : 
@@ -119,7 +141,7 @@ class Launcher:
 
             Returns: the dictionnary of the position
         """ 
-        infos = Lithologie(file_name).infos
+        infos = Lithologie().get_litho_infos(file_name)
         position = {"NS" : infos["NS degrees"], "EW" : infos["EW degrees"]}
         return position 
 
@@ -131,6 +153,6 @@ class Launcher:
 
             Returns: the dictionnary of the position
         """ 
-        infos = Lithologie(file_name).infos
+        infos = Lithologie().get_litho_infos(file_name)
         position = {"depth" : infos["Total depth (MD) [m RKB]"], "description" : infos["general"]}
         return position 
