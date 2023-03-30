@@ -135,3 +135,7 @@ dmypy.json
 
 application/backend/app/data/
 application/backend/app/model/model_demo.h5
+application/backend/app/model/model_demo_old.h5
+
+legends/
+screen_inputs/
