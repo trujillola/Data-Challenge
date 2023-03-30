@@ -345,6 +345,7 @@ class ResNetModel:
         """
         # Trouver la classe prédite qui a été choisie le plus grand nombre de fois
         most_predicted_class = max(class_predictions, key=class_predictions.get)
+        
         # Trouver le nombre de fois que cette classe a été choisie
         most_predictions_count = class_predictions[most_predicted_class]
 
