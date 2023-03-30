@@ -128,6 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+
 NO_Quad_15/
 
 Siamese_Net/data/
@@ -141,3 +142,7 @@ application/backend/app/model/weights.h5
 
 legends/
 screen_inputs/
+
+# Bdd images de légengde rognées par mathis
+motifs_legende/*
+
