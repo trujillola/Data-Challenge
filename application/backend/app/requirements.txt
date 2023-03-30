@@ -14,3 +14,5 @@ BeautifulSoup4
 torch
 tensorflow
 openpyxl
+imagesize
+python-multipart

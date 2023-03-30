@@ -45,14 +45,18 @@ function BlockLeft({setFileName, setStartScrapping}) {
     useEffect(() => {
         if (uploadedFileNameLegend != 'Upload Legend' && uploadedFileNameLithologie!= 'Upload Lithologie' && selectedFile!= '') {
             var bodyFormData = new FormData();
-            bodyFormData.append('well_name', selectedFile);
+           // bodyFormData.append('well_name', selectedFile);
             bodyFormData.append('legend_file', uploadedFileLegend);
             bodyFormData.append('column_file', uploadedFileLithologie);
-
+            console.log("bodyformdta = ", bodyFormData)
+            for (var pair of bodyFormData.entries()) {
+                console.log(pair[0]+ ', ' + pair[1]); 
+            }
             axios({
                 method: "post",
                 url: "http://127.0.0.1:8000/api/upload_column_legend/",
                 data: bodyFormData,
+                params: {'well_name': selectedFile},
                 headers: { "Content-Type": "multipart/form-data" },
               })
                 .then(function (response) {
@@ -80,12 +84,12 @@ function BlockLeft({setFileName, setStartScrapping}) {
             
                 <label className='btn-upload'> 
                     <span>{uploadedFileNameLegend}</span>
-                    <input id='input' className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload Legend' onChange={handleChangeLegend}/>
+                    <input id='input' className='btn-upload' type="file" name="upload" accept="image/png" placeholder='Upload Legend' onChange={handleChangeLegend}/>
                 </label>
 
                 <label className='btn-upload'> 
                     <span>{uploadedFileNameLithologie}</span>
-                    <input id='input' className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload Lithologie' onChange={handleChangeLithologie}/>
+                    <input id='input' className='btn-upload' type="file" name="upload" accept="image/png" placeholder='Upload Lithologie' onChange={handleChangeLithologie}/>
                 </label>
             </div>
             <img className='dots' src={dots} alt='dots'/>

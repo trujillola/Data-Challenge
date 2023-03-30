@@ -9,7 +9,8 @@ function WellComposition({fileName, startScrapping}) {
     const[loading, setLoading] = useState(true)
     useEffect(() => {
         if(startScrapping){
-            axios.get('http://127.0.0.1:8000/api/get_well_composition/', {params : {file_name: fileName}})
+            console.log("get well compostion fileName = ", fileName);
+            axios.get('http://127.0.0.1:8000/api/get_well_composition/', {params : {well_name: fileName}})
             .then(function (response) {
                 setWellComposition(response.data)
                 console.log("well composition = ", wellComposition)
