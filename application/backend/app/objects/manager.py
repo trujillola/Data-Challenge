@@ -2,8 +2,10 @@ from dataclasses import dataclass
 import glob
 import shutil
 from fastapi import UploadFile, File
+import openpyxl
 import pandas as pd
 import os
+from openpyxl.chart import PieChart, Reference
 from sklearn.model_selection import train_test_split
 import cv2
 import numpy as np
@@ -24,6 +26,104 @@ import easyocr
 import numpy as np
 from selenium.webdriver.chrome.options import Options    
 
+class ExcelManager():
+
+    def __init__(self):
+        pass
+
+    def get_composition_from_excel(self,litho_dir : str):
+        composition_dict = {}
+        res_path = litho_dir+"resultats.xlsx"
+        # Nom de la feuille dans le fichier Excel
+        nom_feuille = "Sheet"
+
+        # Lire le fichier Excel en utilisant pandas
+        df = pd.read_excel(res_path, sheet_name=nom_feuille)
+
+        # Cette colonne sera toujours en premièr, et donc s'appellera toujours comme ca
+        # Nom de la colonne que vous voulez retourner
+        nom_colonne = "Unnamed: 0"
+
+        # Sélectionner la colonne spécifique en utilisant le nom de la colonne
+        df[nom_colonne] = df[nom_colonne].dropna()
+        list_nom = df[nom_colonne].to_list()
+        # Supprime le denrier élément de la liste
+        # Comme on ajoute une ligne à la fin du tableau pour les totaux, cela sera toujours de cette configuration aussi
+        list_nom.pop()
+        # print(df)
+
+        # Afficher la colonne
+        # print(list_nom)
+
+        # Supprimer toutes les colonnes qui contiennent plus de 5 NaN
+        df = df.dropna(thresh=len(df)-(len(list_nom) - 1) , axis = 1)
+
+        # Sélectionner la dernière colonne restante
+        list_nombre = df.iloc[:, -2].to_list()
+        list_nombre.pop()
+        # print(list_nombre)
+        return list_nom, list_nombre
+    
+    def create_excel(self, litho_dir : str, heights : dict, class_predictions : dict, classes : list):
+        """
+            Create an excel file with the composition of the well
+        """
+        # Trouver la classe prédite qui a été choisie le plus grand nombre de fois
+        most_predicted_class = max(class_predictions, key=class_predictions.get)
+        
+        # Trouver le nombre de fois que cette classe a été choisie
+        most_predictions_count = class_predictions[most_predicted_class]
+
+        # Créer le tableur Excel
+        wb = openpyxl.Workbook()
+        ws = wb.active
+
+        # Ajouter les hauteurs relatives pour chaque matériau dans le tableur
+        for i, m in enumerate(classes):
+            # Ajouter le nom du matériau dans la première colonne
+            ws.cell(row=i+2, column=1, value=m)
+
+            # Ajouter les hauteurs relatives dans les colonnes suivantes
+            for j, h in enumerate(heights[m]):
+                ws.cell(row=i+2, column=j+2, value=h)
+
+        # Ajouter la ligne des totaux en bas
+        #for j in range(2, 7):
+        #10 etant le nb de fois qu'un matériau est prédit
+        for j in range(2, most_predictions_count+2):
+            sub_sum = sum(ws.cell(row=i, column=j).value or 0 for i in range(2, len(classes)+2))
+            ws.cell(row=len(classes)+2, column=j, value=sub_sum)
+
+        # Ajouter la colonne des totaux
+        for i in range(2, len(classes)+3):
+            sub_sum = sum(ws.cell(row=i, column=j).value or 0 for j in range(2,  len(classes)))
+            ws.cell(row=i, column=most_predictions_count+2, value=sub_sum)
+
+        # Ajouter la colonne des pourcentages
+        for i in range(2, len(classes)+2):
+            total = ws.cell(row=len(classes)+2, column=most_predictions_count+2).value
+            percent = sum(ws.cell(row=i, column=j).value or 0 for j in range(2, most_predictions_count+2)) / ws.cell(row=len(classes)+2, column=most_predictions_count+2).value
+            ws.cell(row=i, column=most_predictions_count+3, value=percent).number_format = '0.00%'
+
+        #génération du graphique camembert
+        # Créer le graphique camembert
+        chart = PieChart()
+        chart.title = "Pourcentage Lithologie"
+
+        # Ajouter les données du graphique
+        labels = Reference(ws, min_col=1, min_row=2, max_row=len(classes)+1)
+        data = Reference(ws, min_col=most_predictions_count+3, min_row=1, max_row=len(classes)+1)
+        chart.add_data(data, titles_from_data=True)
+        chart.set_categories(labels)
+
+        # Ajouter le graphique au tableur
+        ws.add_chart(chart, "J2")
+
+        # Enregistrer le tableur Excel
+        wb.save(litho_dir+"resultats.xlsx")
+
+        return 1
+    
 
 class ScrapeContent:
 

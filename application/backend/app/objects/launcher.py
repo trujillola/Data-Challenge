@@ -1,11 +1,12 @@
 import pickle
-from app.objects.manager import FileManager, Lithologie, DataLoader, LegendExtraction
+from app.objects.manager import FileManager,ExcelManager, Lithologie, DataLoader, LegendExtraction
 from fastapi import UploadFile, File
 from app.model.model import ResNetModel, SiameseNetwork
 import numpy as np
 import pandas as pd
 import os
 import random
+import cv2
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 import imagesize
@@ -16,6 +17,7 @@ class Launcher:
     """
 
     file_manager : FileManager
+    excel_manager : ExcelManager
     path_separator = os.path.sep
     model : SiameseNetwork
     lithologie : Lithologie
@@ -51,6 +53,7 @@ class Launcher:
         self.file_manager = FileManager()
         self.legend_extractor = LegendExtraction()
         self.lithologie = Lithologie()
+        self.excel_manager = ExcelManager()
         
         # files paths
         self.dataloader = DataLoader(self.WIDTH, self.HEIGHT, self.CEELS, self.data_path, self.output_path)
@@ -126,14 +129,17 @@ class Launcher:
                     max_idx = idx
            
             max_prediction_info = [names[max_idx][0], max[0]]
-            print("predictions", max_prediction_info)
             litho_predictions[bloc_idx] = max_prediction_info
 
-            # Compute the class_predictions and heights
-            
+        classes = self.get_classes(legend_patterns)
+        # Compute the class_predictions and heights
+        class_predictions, heights = self.get_infos(litho_predictions, classes, well_name)
         
+        # Compute the percentages
+        self.excel_manager.create_excel(litho_path, heights, class_predictions, classes)
 
-        return {"oui": 1, "non" : 2}
+        # Return the percentages
+        return self.excel_manager.get_composition_from_excel(litho_path)
 
     def get_classes(self, legend_patterns):
         classes = []
@@ -141,14 +147,19 @@ class Launcher:
             classes.append(name)
         return classes
     
-    # def get_infos(self,litho_predictions, classes, names, max_idx, well_name, bloc_idx):
-        # # Number of times a class has been predicted
-        # class_predictions = {m: 0 for m in classes}
-        # # Dictionary of the cumulatives heights for each class
-        # heights = {m: [] for m in classes}
-        # _, heights[names[max_idx][0]] = imagesize.get("./app/data/results/"+well_name+"/stones/"+bloc_idx+".png")
-        # class_predictions[names[max_idx][0]] += 1
-        # return class_predictions, heights
+    def get_infos(self,litho_predictions, classes, well_name):
+        # Number of times a class has been predicted
+        class_predictions = {m: 0 for m in classes}
+        # Dictionary of the cumulatives heights for each class
+        heights = {m: [] for m in classes}
+        for id, prediction in litho_predictions.items():
+            class_predictions[prediction[0]] += 1
+            path = "./app/data/results/"+well_name+"/stones/"+id+".png"
+            im = cv2.imread(path)
+            w, height, c =  im.shape
+            valeur_relative = height / 100
+            heights[prediction[0]].append(valeur_relative)
+        return class_predictions, heights
         
     def run_siamese(self) : 
         """

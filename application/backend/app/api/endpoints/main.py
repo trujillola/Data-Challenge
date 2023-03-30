@@ -71,11 +71,15 @@ async def get_well_composition(well_name : str) :
     # --color-red: #ff0000;
 
     tab_labels, tab_valeurs = launcher.get_composition(well_name)
-    tab_colors = ['#ffc800', '#96e600', '#28c896', '#32c8c8', '#009bff']
+    print(tab_labels)
+    print(tab_valeurs)
+    tab_colors = ['#ffc800', '#96e600', '#28c896', '#32c8c8', '#009bff', '#ff0000', '#285aff', '#32c8c8', "#ff5733", "#ffed33", "#a2ff33 ", "#60ff33", "#33ff9d", "#33fff7", "#33b0ff","#4e33ff" ]
     # dict_composition = [{ 'value': 10, 'label': 'sand', 'color': '#ffc800' }, 
     #     { 'value': 20, 'label': 'clay', 'color': '#28c896'  },
     #     { 'value': 90, 'label': 'stone', 'color': '#96e600'  }]
     dict_composition = []
+    print(len(tab_labels))
+    print(len(tab_valeurs))
     for i in range(len(tab_labels)):
         dict_composition.append({'value': tab_valeurs[i], 'label': tab_labels[i], 'color': tab_colors[i]})
     return dict_composition
