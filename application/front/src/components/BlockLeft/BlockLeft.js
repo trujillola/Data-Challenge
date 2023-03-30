@@ -7,14 +7,24 @@ import axios from 'axios';
 
 
 function BlockLeft({setFileName, setStartScrapping}) {
-    const [uploadedFileName, setUploadedFileName] = useState("Upload New");
-    const [uploadedFile, setUploadedFile] = useState();
+    const [uploadedFileNameLegend, setUploadedFileNameLegend] = useState("Upload Legend");
+    const [uploadedFileNameLithologie, setUploadedFileNameLithologie] = useState("Upload Lithologie");
+    const [uploadedFileLegend, setUploadedFileLegend] = useState();
+    const [uploadedFileLithologie, setUploadedFileLithologie] = useState();
     const [fileList, setFileList] = useState([]);
     //const axios = require("axios")
-    function handleChange(event) {
-        setUploadedFileName(event.target.files[0].name);
-        setUploadedFile(event.target.files[0]);
-        console.log(uploadedFileName);
+    function handleChangeLegend(event) {
+        setUploadedFileNameLegend(event.target.files[0].name);
+        setUploadedFileLegend(event.target.files[0]);
+        console.log(uploadedFileNameLegend);
+       // setFileName(event.target.files[0].name);
+        //setSelectedFile('')
+      }
+
+      function handleChangeLithologie(event) {
+        setUploadedFileNameLithologie(event.target.files[0].name);
+        setUploadedFileLithologie(event.target.files[0]);
+        console.log(uploadedFileNameLegend);
        // setFileName(event.target.files[0].name);
         //setSelectedFile('')
       }
@@ -26,7 +36,7 @@ function BlockLeft({setFileName, setStartScrapping}) {
       const file = event.target.value;
       setSelectedFile(file);
       setFileName(file); 
-    //   setUploadedFileName("Upload New");
+    //   setUploadedFileNameLegend("Upload New");
     //   setUploadedFile();
       console.log("file = ", file)
     }
@@ -53,9 +63,9 @@ function BlockLeft({setFileName, setStartScrapping}) {
    
     
     useEffect(() => {
-        if (uploadedFileName != 'Upload New') {
+        if (uploadedFileNameLegend != 'Upload Legend') {
             var bodyFormData = new FormData();
-            bodyFormData.append('uploaded_file', uploadedFile);
+            bodyFormData.append('uploaded_file', uploadedFileLegend);
             axios({
                 method: "post",
                 url: "http://127.0.0.1:8000/api/upload_file/",
@@ -75,12 +85,37 @@ function BlockLeft({setFileName, setStartScrapping}) {
                     //setLoading(false);
                 });
         }
-    }, [uploadedFileName]);
+    }, [uploadedFileNameLegend]);
+
+    useEffect(() => {
+        if (uploadedFileNameLithologie!= 'Upload Lithologie') {
+            var bodyFormData = new FormData();
+            bodyFormData.append('uploaded_file', uploadedFileLithologie);
+            axios({
+                method: "post",
+                url: "http://127.0.0.1:8000/api/upload_file/",
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" },
+              })
+                .then(function (response) {
+                    //setFileList(response.data)
+                    console.log("coucou");
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+                .finally(() => {
+                    console.log('finally')
+                    //setLoading(false);
+                });
+        }
+    }, [uploadedFileNameLithologie]);
 
     return (
         <div className='block-left'> 
             <h1>Completion logs</h1>
-            <p>Enter the name of the well on the left and the corresponding lithologie on the right.</p>
+            <p>Enter the name of the well on the left and the corresponding legend in the middle and lithologie on the right.</p>
             <div className='btn'>
                 {/* <button className='btn-select'>Select completion log</button> */}
                 <input className='btn-input' placeholder="15_3-2"  value={selectedFile} onChange={handleFileChange}></input>
@@ -95,12 +130,17 @@ function BlockLeft({setFileName, setStartScrapping}) {
                 </select> */}
  
                 <label className='btn-upload'> 
-                    <span>{uploadedFileName}</span>
-                    <input id='input' className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload New' onChange={handleChange}/>
+                    <span>{uploadedFileNameLegend}</span>
+                    <input id='input' className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload Legend' onChange={handleChangeLegend}/>
+                </label>
+
+                <label className='btn-upload'> 
+                    <span>{uploadedFileNameLithologie}</span>
+                    <input id='input' className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload Lithologie' onChange={handleChangeLithologie}/>
                 </label>
             </div>
             <img className='dots' src={dots} alt='dots'/>
-            {uploadedFileName == "Upload New" || selectedFile == ''?  
+            {uploadedFileNameLegend == "Upload Legend" || uploadedFileNameLithologie == "Upload Lithologie"|| selectedFile == ''?  
                 <img className='disabled-play-btn' src={disabled_play_btn} alt='disabled play btn'/>:
             <a className='play-btn' href='#results'>
                 <img src={play_btn} alt='play btn' onClick={()=>setStartScrapping(true)}/> 
