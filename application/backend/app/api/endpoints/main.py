@@ -26,21 +26,31 @@ async def get_files_list():
     return launcher.get_files_list()
 
 
-@router.post("/upload_file/")
-async def create_upload_file(uploaded_file: UploadFile):
-    """Upload in the database a new file given by the user, runs the model on it and returns a message notifying the user of the result.
+# @router.post("/upload_file/")
+# async def create_upload_file(uploaded_file: UploadFile):
+#     """Upload in the database a new file given by the user, runs the model on it and returns a message notifying the user of the result.
 
-    Args:
-        file (UploadFile): _description_
+#     Args:
+#         file (UploadFile): _description_
 
-    Returns:
-        message: message error in case the upload failed of a success message.
+#     Returns:
+#         message: message error in case the upload failed of a success message.
+#     """
+#     return launcher.upload_file(uploaded_file)
+
+@router.post("/upload_column_legend/")
+async def upload_column_legend(well_name : str, column_file: UploadFile, legend_file: UploadFile):
+    """Upload in the database the new files given by the user
     """
-    return launcher.upload_file(uploaded_file)
+    column_path = "./app/data/results/" + well_name + "/"
+    column_file.filename = "completion_log.png"
+    legend_path = "./app/data/results/" + well_name + "/"
+    legend_file.filename = "legend.png"
+    return (launcher.file_manager.upload_file(column_path,column_file) and launcher.file_manager.upload_file(legend_path,legend_file))
 
 
 @router.get("/get_well_composition/")
-async def get_well_composition(file_name : str) :
+async def get_well_composition(well_name : str) :
     """Get the composition of a well given its name 
 
     Args:
@@ -58,7 +68,8 @@ async def get_well_composition(file_name : str) :
     # --color-blue : #009bff;
     # --color-dark-blue : #285aff;
     # --color-red: #ff0000;
-    tab_labels, tab_valeurs = launcher.get_composition("15_3-4")
+
+    tab_labels, tab_valeurs = launcher.get_composition(well_name)
     tab_colors = ['#ffc800', '#96e600', '#28c896', '#32c8c8', '#009bff']
     # dict_composition = [{ 'value': 10, 'label': 'sand', 'color': '#ffc800' }, 
     #     { 'value': 20, 'label': 'clay', 'color': '#28c896'  },

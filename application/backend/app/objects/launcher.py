@@ -97,11 +97,7 @@ class Launcher:
         for key in litho:
             print(key)
             # litho_predictions[key] = self.model.predict_stone_class(litho[key], legend_patterns)
-        """_summary_
-
-        Returns:
-            _type_: _description_
-        """        
+             
         return {"oui": 1, "non" : 2}
 
     def run_siamese(self) : 
@@ -129,7 +125,6 @@ class Launcher:
             Returns:
                 bool: True if the data was added, False otherwise.
         """
-        
         return self.file_manager.upload_file(uploaded_file)
 
 

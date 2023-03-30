@@ -282,7 +282,6 @@ class FileManager:
     """
 
     file_names : list()
-    dir : str = "./app/data/NO_Quad_15"
 
     def __init__(self):
         """
@@ -291,25 +290,29 @@ class FileManager:
         """
         self.file_names = self.get_files_list()
     
-    def upload_file(self, uploaded_file : UploadFile):
+    def upload_file(self, path : str, uploaded_file : bytes = File(...)):
         """
+            Upload a file to the directory
+            - columns 
+            - legend
         """
-        file_directory = uploaded_file.filename.split("__")[0]
-        if not os.path.exists(self.dir+"/"+file_directory):
-            os.mkdir(self.dir+"/"+file_directory)
-        file_location = self.dir+"/"+file_directory+"/"+uploaded_file.filename
+        print(uploaded_file)
+        # file_directory = uploaded_file.filename.split("__")[0]
+        if not os.path.exists(path):
+            os.mkdir(path)
+        file_location = path+uploaded_file.filename
         with open(file_location, "wb+") as file_object:
-            file_object.write(uploaded_file.file.read())
+            shutil.copyfileobj(uploaded_file.file, file_object)
         return {"info": f"file '{uploaded_file.filename}' saved at '{file_location}'"}
     
-    def get_files_list(self):
+    def get_files_list(self, dir : str = "./app/data/results/"):
         """
             Browse the files in the directory and returns a list of their names
         """
         list_files = []
-        for directory in os.listdir(self.dir):
-            for file in os.listdir(self.dir + "/" + directory):
-                list_files.append(file)
+        for directory in os.listdir(dir):
+            if "completion_log.png" in os.listdir(dir + "/" + directory) and "legend.png" in os.listdir(dir + "/" + directory):
+                list_files.append(directory)
         return list_files
     
 class LegendExtraction():
