@@ -161,7 +161,6 @@ class SiameseNetwork(object):
         Function for fitting the model. If the weights already exist, just return the summary of the model. Otherwise,
         perform a whole train/validation/test split and train the model with the given parameters.
         """
-        print(train_path)
         with open(train_path, 'rb') as f:
             x_train, y_train, names = pickle.load(f)
         """
@@ -245,7 +244,6 @@ class SiameseNetwork(object):
         worst_class_1_prob = 1  # misclassification for same people, y=1, prediction->0
         worst_class_1_name = None
         prob = self.siamese_net.predict(x_test)
-        print(len(x_test))
         for pair_index in range(len(names)):
             name = names[pair_index]
             y_pair = y_test[pair_index]
@@ -283,7 +281,6 @@ class SiameseNetwork(object):
         # Make de set of comparison with the legend images
         predictions = dict()
         for name,pattern in legend_patterns.items():
-            print(pattern.shape)
             prediction = self.siamese_net.predict([image,pattern])
             predictions[name] = prediction[0][0]
         # Keep the legend images with the highest probability
@@ -323,9 +320,7 @@ class ResNetModel:
         class_predictions = {m: 0 for m in self.class_labels}
         # Get the list of images
         image_files = glob.glob(stones_directory + "/*.png")
-        print(image_files)
         for image_file in image_files:
-            print(image_file)
             # Find image height
             img_original_size = Image.open(image_file)
             height = img_original_size.height
@@ -342,7 +337,6 @@ class ResNetModel:
             print("Predicted : ", predicted_label)
             class_predictions[predicted_label] += 1
             heights[predicted_label].append(valeur_relative)
-        print(heights)
         return class_predictions, heights
 
     def create_excel(self, litho_dir : str, heights : dict, class_predictions : dict):

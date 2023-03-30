@@ -1,3 +1,4 @@
+import pickle
 from app.objects.manager import FileManager, Lithologie, DataLoader, LegendExtraction
 from fastapi import UploadFile, File
 from app.model.model import ResNetModel, SiameseNetwork
@@ -7,7 +8,7 @@ import os
 import random
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
-
+import imagesize
 
 class Launcher:
     """
@@ -72,6 +73,7 @@ class Launcher:
 
             Returns: the dictionnary of the compositions
         """ 
+
         
         # Extract the patterns from the legend
         legend_path = os.path.join(self.data_path, well_name, "legend.png")
@@ -85,21 +87,69 @@ class Launcher:
         # Extract the patterns from the lithology
         litho_path = os.path.join(self.data_path, well_name, "completion_log.png")
         litho_output_path = os.path.join(self.data_path, well_name, "stones/")
-
         self.lithologie.split_litho(well_name, litho_path, litho_output_path)
-        print("Legend : ",legend_patterns)
 
         # Get the dictionnary with the litho images
         litho = self.dataloader.load_from_dir(well_name, legend=False)
 
+    
         # Get the prediction for each image
         litho_predictions = {}
-        for key in litho:
-            print(key)
-            # litho_predictions[key] = self.model.predict_stone_class(litho[key], legend_patterns)
-             
+        for bloc_idx in litho:
+            
+            print("litho", bloc_idx)
+            names = []
+            x_first = []
+            x_second = []
+            y = []
+            max_prediction_info = []
+            for name, pattern in legend_patterns.items():
+                # print("litho", bloc_idx, "pattern", name)
+                line = [name]
+                names.append(line)
+                x_first.append(litho[bloc_idx])
+                x_second.append(pattern)
+                y.append(1)
+            with open("./app/data/results/predictions.pickle", 'wb') as f:
+                pickle.dump([[x_first, x_second], y, names], f)
+            with open("./app/data/results/predictions.pickle", 'rb') as f:
+                x_pred, y_pred, names = pickle.load(f)
+            x_pred[0] = np.array(x_pred[0], dtype='float64')
+            x_pred[1] = np.array(x_pred[1], dtype='float64')
+            predictions = self.model.siamese_net.predict(x_pred)
+
+            max = 0
+            max_idx = 0
+            for idx, prediction in enumerate(predictions):
+                if prediction > max:
+                    max = prediction
+                    max_idx = idx
+           
+            max_prediction_info = [names[max_idx][0], max[0]]
+            print("predictions", max_prediction_info)
+            litho_predictions[bloc_idx] = max_prediction_info
+
+            # Compute the class_predictions and heights
+            
+        
+
         return {"oui": 1, "non" : 2}
 
+    def get_classes(self, legend_patterns):
+        classes = []
+        for name, pattern in legend_patterns.items():
+            classes.append(name)
+        return classes
+    
+    # def get_infos(self,litho_predictions, classes, names, max_idx, well_name, bloc_idx):
+        # # Number of times a class has been predicted
+        # class_predictions = {m: 0 for m in classes}
+        # # Dictionary of the cumulatives heights for each class
+        # heights = {m: [] for m in classes}
+        # _, heights[names[max_idx][0]] = imagesize.get("./app/data/results/"+well_name+"/stones/"+bloc_idx+".png")
+        # class_predictions[names[max_idx][0]] += 1
+        # return class_predictions, heights
+        
     def run_siamese(self) : 
         """
             Run the siamese network

@@ -22,7 +22,8 @@ import math
 import Levenshtein  # une bibliothèque Python pour calculer la distance de Levenshtein
 import easyocr
 import numpy as np
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options    
+
 
 class ScrapeContent:
 
@@ -195,7 +196,6 @@ class DataLoader(object):
             image_name = image.split(".")[0]
             image_data = self._open_image(path+image)
             result_dict[image_name] = image_data
-        print(result_dict)
         return result_dict
 
 print("Loaded data loader")
@@ -311,8 +311,9 @@ class FileManager:
         """
         list_files = []
         for directory in os.listdir(dir):
-            if "completion_log.png" in os.listdir(dir + "/" + directory) and "legend.png" in os.listdir(dir + "/" + directory):
-                list_files.append(directory)
+            if os.path.isdir(dir + directory):
+                if "completion_log.png" in os.listdir(dir + directory) and "legend.png" in os.listdir(dir + directory):
+                    list_files.append(directory)
         return list_files
     
 class LegendExtraction():
@@ -531,7 +532,7 @@ class LegendExtraction():
                 acc += 1
             
             # On enregistre la sous partie qu'on souhaite
-            cv2.imwrite(f"{dossier}{nom}.jpg", img[y:y+h, x:x+w])
+            cv2.imwrite(f"{dossier}{nom}.png", img[y:y+h, x:x+w])
             
         # Dessiner les contours simplifiés sur l'image originale
         cv2.drawContours(img, convex_contours, -1, (255, 0, 0), 2)
