@@ -1,9 +1,13 @@
-from app.objects.manager import FileManager, Lithologie
+from app.objects.manager import FileManager, Lithologie, DataLoader, LegendExtraction
 from fastapi import UploadFile, File
-from app.model.model import ResNetModel
+from app.model.model import ResNetModel, SiameseNetwork
 import numpy as np
 import pandas as pd
 import os
+import random
+import tensorflow as tf
+from tensorflow.keras.optimizers import Adam
+
 
 class Launcher:
     """
@@ -11,7 +15,32 @@ class Launcher:
     """
 
     file_manager : FileManager
-    model : ResNetModel
+    path_separator = os.path.sep
+    model : SiameseNetwork
+    lithologie : Lithologie
+    legend_extractor : LegendExtraction
+
+    # Environment settings
+    LOAD_DATA = True
+    IS_EXPERIMENT = False
+    train_name = 'train'
+    train_path = './app/data/train.txt'
+    test_name = 'test'
+    test_path = './app/data/test.txt'
+    WIDTH = HEIGHT = 124
+    CEELS = 1
+    loss_type = "binary_crossentropy"
+    validation_size = 0.2
+    early_stopping = True
+    seeds = [0]
+    lr = [0.00005]
+    batch_size = [32]
+    epochs = [10]
+    patience = [5]
+    min_delta = [0.1]
+    output_path = './app/model/'
+    data_path = './app/data/results/'
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
     def __init__(self):
         """
@@ -19,9 +48,23 @@ class Launcher:
             params : file path of model and list of Wines
         """ 
         self.file_manager = FileManager()
-        self.model = ResNetModel("./app/model/model_demo.h5")
+        self.legend_extractor = LegendExtraction()
+        self.lithologie = Lithologie()
+        
+        # files paths
+        self.dataloader = DataLoader(self.WIDTH, self.HEIGHT, self.CEELS, self.data_path, self.output_path)
+        
+        # A path for the weights
+        load_weights_path = os.path.join(self.output_path, 'weights.h5')
 
-    def get_composition(self, file_name : str):
+        # Construct the model
+        self.model = SiameseNetwork(seed=self.seeds[0], width=self.WIDTH, height=self.HEIGHT, cells=self.CEELS, loss=self.loss_type, metrics=['accuracy'],
+                                optimizer=Adam(lr=self.lr[0]), dropout_rate=0.4)
+        
+        # Get the weights of the model
+        self.model._load_weights(load_weights_path)
+
+    def get_composition(self, well_name : str):
         """
             Get the composition of the well based on a file
 
@@ -29,7 +72,40 @@ class Launcher:
 
             Returns: the dictionnary of the compositions
         """ 
-        return self.model.composition(file_name)
+        
+        # Extract the patterns from the legend
+        legend_path = os.path.join(self.data_path, well_name, "legend.png")
+
+        legend_output_folder = os.path.join(self.data_path, well_name, "legend/")
+        self.legend_extractor.extract_patterns_from_legend(legend_path, legend_output_folder)
+
+        # Get the dictionnary with the legend images
+        legend_patterns = self.dataloader.load_from_dir(well_name, legend=True)
+
+        # Extract the patterns from the lithology
+        litho_path = os.path.join(self.data_path, well_name, "completion_log.png")
+        litho_output_path = os.path.join(self.data_path, well_name, "stones/")
+
+        self.lithologie.split_litho(well_name, litho_path, litho_output_path)
+        print("Legend : ",legend_patterns)
+
+        # Get the dictionnary with the litho images
+        litho = self.dataloader.load_from_dir(well_name, legend=False)
+
+        # Get the prediction for each image
+        litho_predictions = {}
+        for key in litho:
+            print(key)
+            # litho_predictions[key] = self.model.predict_stone_class(litho[key], legend_patterns)
+             
+        return {"oui": 1, "non" : 2}
+
+    def run_siamese(self) : 
+        """
+            Run the siamese network
+        """
+        self.model.run_siamese(self.train_name, self.test_name, self.WIDTH, self.HEIGHT, self.CEELS, self.loss_type, self.validation_size, self.early_stopping)
+
 
     def get_files_list(self):
         """
@@ -49,7 +125,6 @@ class Launcher:
             Returns:
                 bool: True if the data was added, False otherwise.
         """
-        
         return self.file_manager.upload_file(uploaded_file)
 
 
@@ -61,7 +136,7 @@ class Launcher:
 
             Returns: the dictionnary of the position
         """ 
-        infos = Lithologie(file_name).infos
+        infos = Lithologie().get_litho_infos(file_name)
         position = {"NS" : infos["NS degrees"], "EW" : infos["EW degrees"]}
         return position 
 
@@ -73,6 +148,6 @@ class Launcher:
 
             Returns: the dictionnary of the position
         """ 
-        infos = Lithologie(file_name).infos
+        infos = Lithologie().get_litho_infos(file_name)
         position = {"depth" : infos["Total depth (MD) [m RKB]"], "description" : infos["general"]}
         return position 

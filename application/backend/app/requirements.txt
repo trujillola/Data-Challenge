@@ -7,3 +7,10 @@ pytest-cov
 webdriver_manager
 selenium
 codecarbon
+Levenshtein
+easyocr
+scikit-learn
+BeautifulSoup4
+torch
+tensorflow
+openpyxl

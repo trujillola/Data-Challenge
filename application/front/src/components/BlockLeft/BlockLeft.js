@@ -11,7 +11,6 @@ function BlockLeft({setFileName, setStartScrapping}) {
     const [uploadedFileNameLithologie, setUploadedFileNameLithologie] = useState("Upload Lithologie");
     const [uploadedFileLegend, setUploadedFileLegend] = useState();
     const [uploadedFileLithologie, setUploadedFileLithologie] = useState();
-    const [fileList, setFileList] = useState([]);
     //const axios = require("axios")
     function handleChangeLegend(event) {
         setUploadedFileNameLegend(event.target.files[0].name);
@@ -41,59 +40,18 @@ function BlockLeft({setFileName, setStartScrapping}) {
       console.log("file = ", file)
     }
   
-   // const fileList = ['fichier1.pdf', 'fichier2.pdf', 'fichier3.pdf'];
-   
-    useEffect(() => {
-        console.log("ici");
-            axios.get('http://127.0.0.1:8000/api/get_files_list/')
-            .then(function (response) {
-                setFileList(response.data)
-                console.log("coucou");
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .finally(() => {
-                console.log('finally')
-                //setLoading(false);
-            });
-        console.log("laaaa");
-    }, []);
    
     
     useEffect(() => {
-        if (uploadedFileNameLegend != 'Upload Legend') {
+        if (uploadedFileNameLegend != 'Upload Legend' && uploadedFileNameLithologie!= 'Upload Lithologie' && selectedFile!= '') {
             var bodyFormData = new FormData();
-            bodyFormData.append('uploaded_file', uploadedFileLegend);
-            axios({
-                method: "post",
-                url: "http://127.0.0.1:8000/api/upload_file/",
-                data: bodyFormData,
-                headers: { "Content-Type": "multipart/form-data" },
-              })
-                .then(function (response) {
-                    //setFileList(response.data)
-                    console.log("coucou");
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                })
-                .finally(() => {
-                    console.log('finally')
-                    //setLoading(false);
-                });
-        }
-    }, [uploadedFileNameLegend]);
+            bodyFormData.append('well_name', selectedFile);
+            bodyFormData.append('legend_file', uploadedFileLegend);
+            bodyFormData.append('column_file', uploadedFileLithologie);
 
-    useEffect(() => {
-        if (uploadedFileNameLithologie!= 'Upload Lithologie') {
-            var bodyFormData = new FormData();
-            bodyFormData.append('uploaded_file', uploadedFileLithologie);
             axios({
                 method: "post",
-                url: "http://127.0.0.1:8000/api/upload_file/",
+                url: "http://127.0.0.1:8000/api/upload_column_legend/",
                 data: bodyFormData,
                 headers: { "Content-Type": "multipart/form-data" },
               })
@@ -110,25 +68,16 @@ function BlockLeft({setFileName, setStartScrapping}) {
                     //setLoading(false);
                 });
         }
-    }, [uploadedFileNameLithologie]);
+    }, [uploadedFileNameLegend, uploadedFileNameLithologie, selectedFile]);
+
 
     return (
         <div className='block-left'> 
             <h1>Completion logs</h1>
             <p>Enter the name of the well on the left and the corresponding legend in the middle and lithologie on the right.</p>
             <div className='btn'>
-                {/* <button className='btn-select'>Select completion log</button> */}
                 <input className='btn-input' placeholder="15_3-2"  value={selectedFile} onChange={handleFileChange}></input>
             
-                {/* <select  id="file-select" className='btn-select' value={selectedFile} onChange={handleFileChange}>
-                    <option value="">-- Select completion log --</option>
-                    {fileList.map((file) => (
-                    <option key={file} value={file}>
-                        {file}
-                    </option>
-                    ))}
-                </select> */}
- 
                 <label className='btn-upload'> 
                     <span>{uploadedFileNameLegend}</span>
                     <input id='input' className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload Legend' onChange={handleChangeLegend}/>
