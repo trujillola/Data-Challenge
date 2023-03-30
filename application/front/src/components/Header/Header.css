@@ -1,0 +1,19 @@
+.header{
+    background-color: var(--color-grey);
+    opacity: 50%;
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+    align-items: center;
+    padding: 15px;
+    position: fixed;
+    top: 0;
+}
+
+.logo-total{
+    width: 3%;
+}
+
+.logo-cytech{
+    width: 4%
+}
