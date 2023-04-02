@@ -370,7 +370,8 @@ class Lithologie():
         for i in range(len(cnts)-1):
             y_end = cnts[i][0][0][1]
             y_top= cnts[i+1][0][0][1]
-            cv2.imwrite(litho_stones_dir+str(i+1)+".png", image[y_top:y_end, x_start:x_end])
+            if y_top != y_end:
+                cv2.imwrite(litho_stones_dir+str(i+1)+".png", image[y_top:y_end, x_start:x_end])
         y_end = cnts[len(cnts)-1][0][0][1]
         y_top = 1
         if y_end - y_top > 0:
@@ -422,11 +423,11 @@ class LegendExtraction():
         
     ## Objectif : Extraction des motifs
     dictionnaire = list(set([
-        'pyrite', 'to', 'limestone', 'Marl', 'glauconite', 'bitumen', 
+        'pyrite', 'to', 'wood', 'general', 'fossils', 'shell', 'forams', 'burrows', 'frags', 'limestone', 'Marl', 'glauconite', 'bitumen', 
         'dolomite', 'mico', 'nannofossil', 'fine', 'grained', 
         'coarse', 'ooze', 'sand', 'sandstone', 'siderite',
         'clasts', 'flame', 'dewatering' ,'deflected', 'around', 'nodular'
-        'diamict', 'diamictite', 'with', 'silt', 'clay',
+        'diamict', 'no', 'breccia', 'samples', 'metamorphic', 'rock', 'diamictite', 'with', 'silt', 'clay',
         'matrix', 'foraminifer', 'silty', 'sandy', 'calcareous',
         'clayey', 'conglomerate', 'diatom', 'siltstone', 'breccia',
         'radiolarian', 'volcanic', 'ash', 'or', 'tuff', 'chalk',
@@ -504,7 +505,7 @@ class LegendExtraction():
 
 
     # ## Récupérer les rectangles
-    def get_rect(self, file_name):
+    def get_rect(self, file_name : str, output):
         img = cv2.imread(file_name)
 
         # Convertir l'image en niveaux de gris
@@ -516,17 +517,26 @@ class LegendExtraction():
         # Appliquer une binarisation adaptative pour mettre en évidence les contours
         thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
-        # Trouver les contours de l'image
-        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # On enlève les textes de l'image sur laquelle on cherche les motifs pour éviter les bruits
+        image_thresh_copy = thresh.copy()
+        for word_legend in output:
+            #print(word_legend)
+            coord, txt, proba = word_legend
 
-        dict_rect = {}
-        convex_contours = []
-        j = 0
+            x_min, y_min = [int(min(idx)) for idx in zip(*coord)]
+            x_max, y_max = [int(max(idx)) for idx in zip(*coord)]
+
+            for i in range(x_min, x_max):
+                for j in range(y_min, y_max):
+                    image_thresh_copy[j, i] = 0
+
+        # Trouver les contours de l'image
+        contours, _ = cv2.findContours(image_thresh_copy, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         lst_aire_w_h = []
-        lst_h, lst_w, lst_aire, lst_center_point = [], [], [], []
+        lst_h, lst_w, lst_aire = [], [], []
+        
         # Extraire les rectangles de l'image en utilisant les contours trouvés
-
         for contour in contours:
             # Récupérer les contours convexes
             hull = cv2.convexHull(contour)
@@ -546,19 +556,23 @@ class LegendExtraction():
                 lst_h.append(h)
                 lst_w.append(w)
                 lst_aire.append(area)
-                lst_center_point.append((x + w//2, y + h //2))
-                
+
         # Calculer la médiane des aires
         med_h = np.median(lst_h)
         med_w = np.median(lst_w)
         med_aire = np.median(lst_aire) 
 
+        j = 0
+        dict_rect = {}
+        convex_contours = []
         for aire_w_h in lst_aire_w_h:
             x, y, w, h = aire_w_h["rect"]
             aire = aire_w_h["aire"]
             hull = aire_w_h["hull"]
             
-            if (h > med_h*6//7) and (w > med_w*6//7) and (aire > med_aire*6//7):
+            bool1 = (h > med_h*6//7) and (w > med_w*6//7) and (aire > med_aire*6//7)
+            bool2 = (h < med_h*8//7) and (w < med_w*8//7) and (aire < med_aire*8//7)
+            if bool1 and bool2:
                 nom_fichier = f"rect_{j}"
                 dict_rect[nom_fichier] = (x, y, w, h)
                 convex_contours.append(hull)
@@ -571,26 +585,22 @@ class LegendExtraction():
     def assign_legend_pattern(self, dict_mot_coord : dict, dict_rect : dict):
         # Pour chaque mot : trouver la boite la plus proche
         dict_mot_rect = {}
-
         dict_mot_coord_copy = dict_mot_coord.copy()
 
         for mot, coord in dict_mot_coord_copy.items():    
             # mot = xmin et ymax
             x_mot, y_mot = coord["x_min"], coord["y_max"]
-
             lst_distance_boite = []
             
             for key_rect in dict_rect.keys():
                 x, y, w, h = dict_rect[key_rect]
                 x_box, y_box = x + w, y + h // 2
-                
                 dist_eucli = math.sqrt((y_box - y_mot)**2 + (x_box - x_mot)**2)
                 lst_distance_boite.append(dist_eucli)
             
             # On trouve la clé du rectangle qui nous concerne
             dict_mot_coord[mot]["dist_rect"] = np.min(lst_distance_boite)
             dict_mot_coord[mot]["rect"] = list(dict_rect.keys())[np.argmin(lst_distance_boite)]
-            
             dict_mot_rect[mot] = list(dict_rect.keys())[np.argmin(lst_distance_boite)]
 
         del(dict_mot_coord_copy)
@@ -599,18 +609,52 @@ class LegendExtraction():
 
 
     def assign_pattern_legend(self, dict_mot_rect : dict, dict_mot_coord : dict, dict_rect : dict):
-        dict_rect_mot = {}
+        # On ajoute dans un tableau temporaire tous les mots qui pourraient être associés à un rectangle
+        # en faisant gaffe:
+        # - aux ordonnées du coordonnée du mot 
+        # - à sa distance avec le rectangle ou avec le dernier mot associé au rectangle
+
+        dict_rect_mot_tmp, dict_rect_mot = {}, {}
         for word, rect in dict_mot_rect.items():
+            word_x_min = dict_mot_coord[word]["x_min"]
             word_y_min = dict_mot_coord[word]["y_min"]
             word_y_max = dict_mot_coord[word]["y_max"]
             rect_y_min = dict_rect[rect][1]
-            rect_y_max = dict_rect[rect][1]+dict_rect[rect][3] # = (x, y, w, h)
+            rect_y_max = dict_rect[rect][1] + dict_rect[rect][3] # = (x, y, w, h)
+
+            x, y, w, h = dict_rect[dict_mot_rect[word]]
+            x_box, y_box = x + w, y + h // 2
+            dist = math.sqrt((y_box - word_y_max)**2 + (x_box - word_x_min)**2)
             
+            # On ne prend que les mots compris entre le ymin et le ymax du rectangle (avec une petite marge)
             if word_y_max < rect_y_max + 20 and rect_y_min - 20 < word_y_min:
-                if rect in dict_rect_mot.keys():
-                    dict_rect_mot[rect] += " " + word
-                else:
-                    dict_rect_mot[rect] = word
+                # Si la distance entre le rectangle et le début du mot est faible : on ajoute le mot
+                if dist < 30:
+                    if rect in dict_rect_mot_tmp.keys():
+                        dict_rect_mot_tmp[rect].append(word)
+                        dict_rect_mot[rect] += " " + word
+                    else:
+                        dict_rect_mot_tmp[rect] = [word]
+                        dict_rect_mot[rect] = word
+                
+                # Sinon on ajoute le mot s'il est proche du dernier mot
+                elif rect in dict_rect_mot_tmp.keys() and len(dict_rect_mot_tmp[rect]) > 0:
+                    avant_dernier = len(dict_rect_mot_tmp[rect]) - 2
+                    word_prec = dict_rect_mot_tmp[rect][avant_dernier]
+
+                    word_x_max_prec = dict_mot_coord[word_prec]["x_max"]
+                    word_y_max_prec = dict_mot_coord[word_prec]["y_max"]
+                    dist_between_word = math.sqrt((word_y_max_prec - word_y_max)**2 + (word_x_max_prec - word_x_min)**2)
+                    
+                    if dist_between_word < 15 :
+                        if rect in dict_rect_mot_tmp.keys():
+                            dict_rect_mot_tmp[rect].append(word)
+                            dict_rect_mot[rect] += " " + word
+                        else:
+                            dict_rect_mot_tmp[rect] = [word]
+                            dict_rect_mot[rect] = word
+
+        del dict_rect_mot_tmp
         
         return dict_rect_mot
 
@@ -634,7 +678,7 @@ class LegendExtraction():
                 acc += 1
             
             # On enregistre la sous partie qu'on souhaite
-            cv2.imwrite(f"{dossier}{nom}.png", img[y:y+h, x:x+w])
+            cv2.imwrite(f"{dossier}{nom.upper()}.png", img[y:y+h, x:x+w])
             
         # Dessiner les contours simplifiés sur l'image originale
         cv2.drawContours(img, convex_contours, -1, (255, 0, 0), 2)
@@ -652,7 +696,7 @@ class LegendExtraction():
         dict_mot_coord = self.word_and_coord(output, self.dictionnaire, proba_seuil)
 
         # Récupérer les rectangles potentiels et leurs informations
-        convex_contours, dict_rect, img = self.get_rect(file_name)
+        convex_contours, dict_rect, img = self.get_rect(file_name, output)
 
         # On associe à chaque mot le rectangle le plus proche
         dict_mot_rect, dict_mot_coord = self.assign_legend_pattern(dict_mot_coord, dict_rect)
