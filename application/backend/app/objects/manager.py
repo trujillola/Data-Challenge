@@ -74,7 +74,7 @@ class ScrapeContent:
                 content_json["general"] += span.text.strip()
             else:
                 get_next = "General" in span.text
-        
+       # self.close()
         return content_json
         
     def close(self):
@@ -103,9 +103,9 @@ class Lithologie():
         self.litho_name = litho_name
         self.litho_dir = self.results_dir+litho_name.split("__")[0]+"/"
         self.litho_stones_dir = self.litho_dir+"stones/"
-        self.scrapper = ScrapeContent()
-        print(self.scrapper.getContent(litho_name.split("__")[0]))
-        self.infos = self.scrapper.getContent(litho_name.split("__")[0])
+        #self.scrapper = ScrapeContent()
+        #print(self.scrapper.getContent(litho_name.split("__")[0]))
+        #self.infos = self.scrapper.getContent(litho_name.split("__")[0])
         
 
     def split_litho(self):

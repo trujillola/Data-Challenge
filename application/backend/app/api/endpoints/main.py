@@ -74,7 +74,8 @@ async def get_well_composition(file_name : str):
     dict_composition = []
     for i in range(len(tab_labels)):
         dict_composition.append({'value': tab_valeurs[i], 'label': tab_labels[i], 'color': tab_colors[i]})
-    return dict_composition
+    dict_composition_without_zero = [element for element in dict_composition if element["value"] != 0]
+    return dict_composition_without_zero
 
 
 @router.get("/get_well_description/")
@@ -89,8 +90,7 @@ async def get_well_description(file_name : str):
         description : string of the description of the well
 
     """
-
-
+   
     description = launcher.get_well_description(file_name)
 
     return description
@@ -131,3 +131,19 @@ async def update_well_name(file_name : str, new_file_name : str):
     """
     message = ""
     return message
+
+@router.post("/crop_image_deep/")
+async def crop_image_deep(min : int, max : int):
+    """
+       Change the name of a well given the new name
+
+    Args:
+        file_name (str): string of the required filename
+        new_file_name (str): string of the name of the file
+    
+    Returns:
+        a validation message
+
+    """
+    launcher.crop_image(min, max)
+    return 0

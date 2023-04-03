@@ -1,9 +1,10 @@
-from app.objects.manager import FileManager, Lithologie
+from app.objects.manager import FileManager, Lithologie, ScrapeContent
 from fastapi import UploadFile, File
 from app.model.model import ResNetModel
 import numpy as np
 import pandas as pd
 import os
+from PIL import Image
 
 class Launcher:
     """
@@ -12,6 +13,7 @@ class Launcher:
 
     file_manager : FileManager
     model : ResNetModel
+    info: dict
 
     def __init__(self):
         """
@@ -20,6 +22,7 @@ class Launcher:
         """ 
         self.file_manager = FileManager()
         self.model = ResNetModel("./app/model/model_demo.h5")
+        self.infos = {}
 
     def get_composition(self, file_name : str):
         """
@@ -61,8 +64,10 @@ class Launcher:
 
             Returns: the dictionnary of the position
         """ 
-        infos = Lithologie(file_name).infos
-        position = {"NS" : infos["NS degrees"], "EW" : infos["EW degrees"]}
+        if(self.infos == {}):
+            #self.infos = Lithologie(file_name).infos
+            self.infos = ScrapeContent().getContent(file_name.split("__")[0])
+        position = {"NS" : self.infos["NS degrees"], "EW" : self.infos["EW degrees"]}
         return position 
 
     def get_well_description(self, file_name : str):
@@ -73,6 +78,31 @@ class Launcher:
 
             Returns: the dictionnary of the position
         """ 
-        infos = Lithologie(file_name).infos
-        position = {"depth" : infos["Total depth (MD) [m RKB]"], "description" : infos["general"]}
+        if(self.infos == {}):
+            self.infos = ScrapeContent().getContent(file_name.split("__")[0])
+        position = {"depth" : self.infos["Total depth (MD) [m RKB]"], "description" : self.infos["general"]}
         return position 
+
+    def crop_image(self, min: int, max: int):
+        # Chargement de l'image PNG
+        img = Image.open('./app/data/litho_front_metres.png')
+
+        #si sur le front on entre 400 et 450 alors on prend le crop du (0,295)
+        #si sur le front on entre 450 et 500 alors on prend le crop du (275,568)
+
+        # Délimitations des lignes à extraire (en pixels)
+        lines = [(0, 295), (275, 568)]
+
+        # Boucle sur les délimitations de lignes pour extraire les sous-images
+        for i, (start, end) in enumerate(lines):
+            # Découpage de l'image
+            line_img = img.crop((0, start, img.width, end))
+        print("-----------------------")
+        print("min = ", min)
+        # Enregistrement de la sous-image dans un fichier PNG
+        if(min == 400):
+            line_img.save(f'./app/data/split_depth-{0}.png')
+        else:
+            line_img.save(f'./app/data/split_depth-{1}.png')
+            #line_img.save(f'split_depth-{i}.png')
+        return 0
