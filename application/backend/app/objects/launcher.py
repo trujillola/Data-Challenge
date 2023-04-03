@@ -14,6 +14,7 @@ class Launcher:
     file_manager : FileManager
     model : ResNetModel
     info: dict
+    filename: str 
 
     def __init__(self):
         """
@@ -23,6 +24,7 @@ class Launcher:
         self.file_manager = FileManager()
         self.model = ResNetModel("./app/model/model_demo.h5")
         self.infos = {}
+        self.filename = ""
 
     def get_composition(self, file_name : str):
         """
@@ -64,8 +66,9 @@ class Launcher:
 
             Returns: the dictionnary of the position
         """ 
-        if(self.infos == {}):
+        if(self.infos == {} or self.filename != file_name):
             #self.infos = Lithologie(file_name).infos
+            self.filename = file_name
             self.infos = ScrapeContent().getContent(file_name.split("__")[0])
         position = {"NS" : self.infos["NS degrees"], "EW" : self.infos["EW degrees"]}
         return position 
@@ -78,7 +81,9 @@ class Launcher:
 
             Returns: the dictionnary of the position
         """ 
-        if(self.infos == {}):
+        print("file name = +++++++++++ ", file_name)
+        if(self.infos == {} or self.filename != file_name):
+            self.filename = file_name
             self.infos = ScrapeContent().getContent(file_name.split("__")[0])
         position = {"depth" : self.infos["Total depth (MD) [m RKB]"], "description" : self.infos["general"]}
         return position 

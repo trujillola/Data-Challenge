@@ -38,7 +38,7 @@ function WellComposition({fileName, startScrapping}) {
             {console.log("composition !!!!! ", wellComposition)}
             {loading? 
             <Loading></Loading> :
-            <Pie3D key="myPieChart" config={{size: 1.1, ir: 0, height: 60, angle: 60, strokeWidth:5}} data={wellComposition} />
+            <Pie3D key="myPieChart" config={{size: 1, ir: 0, height: 60, angle: 60, strokeWidth:5}} data={wellComposition} />
             }
         </div>
           

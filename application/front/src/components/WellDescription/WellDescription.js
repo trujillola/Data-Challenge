@@ -13,6 +13,7 @@ function WellDescription({fileName, startScrapping}) {
             axios.get('http://127.0.0.1:8000/api/get_well_description/', {params : {file_name: fileName}})
             .then(function (response) {
                 setWellDescription(response.data)
+                console.log("well description ! = ", wellDescription)
             })
             .catch(function (error) {
                 console.log(error);
