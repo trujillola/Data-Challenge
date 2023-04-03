@@ -4,9 +4,10 @@ import dots from '../../assets/dots.png'
 import play_btn from '../../assets/play_btn.svg'
 import disabled_play_btn from '../../assets/disabled_play_btn.svg'
 import axios from 'axios';
+import Deep from '../Deep/Deep';
 
 
-function BlockLeft({setFileName, setStartScrapping}) {
+function BlockLeft({setFileName, setStartScrapping, startScrapping}) {
     const [uploadedFileName, setUploadedFileName] = useState("Upload New");
     const [uploadedFile, setUploadedFile] = useState();
     const [fileList, setFileList] = useState([]);
@@ -15,6 +16,8 @@ function BlockLeft({setFileName, setStartScrapping}) {
         setUploadedFileName(event.target.files[0].name);
         setUploadedFile(event.target.files[0]);
         console.log(uploadedFileName);
+        setStartScrapping(false);
+        console.log("startscrapping = ", startScrapping)
        // setFileName(event.target.files[0].name);
         //setSelectedFile('')
       }
@@ -29,6 +32,8 @@ function BlockLeft({setFileName, setStartScrapping}) {
     //   setUploadedFileName("Upload New");
     //   setUploadedFile();
       console.log("file = ", file)
+      setStartScrapping(false);
+      console.log("startscrapping = ", startScrapping)
     }
   
    // const fileList = ['fichier1.pdf', 'fichier2.pdf', 'fichier3.pdf'];
@@ -99,6 +104,7 @@ function BlockLeft({setFileName, setStartScrapping}) {
                     <input id='input' className='btn-upload' type="file" name="upload" accept="application/png" placeholder='Upload New' onChange={handleChange}/>
                 </label>
             </div>
+            <Deep></Deep>
             <img className='dots' src={dots} alt='dots'/>
             {uploadedFileName == "Upload New" || selectedFile == ''?  
                 <img className='disabled-play-btn' src={disabled_play_btn} alt='disabled play btn'/>:

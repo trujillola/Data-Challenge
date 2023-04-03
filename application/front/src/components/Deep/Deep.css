@@ -1,0 +1,39 @@
+.btn-deep{
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-input-number{
+    background-color: var(--primary-color-white);
+    width: 40px;
+    padding: 15px;
+    font-weight: bold;
+    border: 2px solid var(--color-green);
+    color: var(--color-green);
+    text-align: center;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.label-number{
+    display: flex;
+    flex-direction: column;
+}
+
+.ctn-btn-min-max{
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.btn-crop-img{
+    width: 230px;
+    padding: 15px;
+    font-weight: bold;
+    border: 2px solid var(--color-green);
+    color: var(--color-green);
+    text-align: center;
+    cursor: pointer;
+    background-color: white;
+    margin-top: 20px;
+}

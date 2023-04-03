@@ -1,0 +1,47 @@
+.footer{
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    width: 100vw;;
+    background-color: var(--color-grey);
+    color: rgb(87, 86, 86);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 10px;
+    padding-bottom: 10px
+} 
+
+
+
+/* footer{
+    text-align:center;
+    background-color: var(--color-grey);
+    color: rgb(87, 86, 86);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+  } */
+  
+  footer a {
+    color:rgb(87, 86, 86);
+  }
+
+  .mail{
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+  
+  
+  /* footer i {
+    color:rgba(255, 255, 255, 0.2);
+  } */
+  
+  footer p {
+    margin-bottom: 5px;
+  }
+  

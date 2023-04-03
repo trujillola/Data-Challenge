@@ -6,7 +6,9 @@ import Loading from '../Loading/Loading'
 function WellDescription({fileName, startScrapping}) {
     const[wellDescription, setWellDescription] = useState([]);
     const[loading, setLoading] = useState(true)
+    
     useEffect(() => {
+        console.log("yooooooooooouuuuuuuuuuuuuuu")
         if(startScrapping){
             axios.get('http://127.0.0.1:8000/api/get_well_description/', {params : {file_name: fileName}})
             .then(function (response) {

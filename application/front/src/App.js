@@ -14,7 +14,7 @@ function App() {
     }
     return (
       <div className="App">
-        <Home setFileName={setFileName} setStartScrapping={setStartScrapping}></Home>
+        <Home setFileName={setFileName} setStartScrapping={setStartScrapping} startScrapping={startScrapping}></Home>
         <Results fileName={fileName} startScrapping={startScrapping}></Results>
       </div>
     );

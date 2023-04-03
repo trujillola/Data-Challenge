@@ -51,6 +51,7 @@ select option{
     background-color: var(--primary-color-white);
     color: var(--color-green);
     width: 200px;
+    overflow: hidden;
 }
 
 .btn-input{
@@ -96,7 +97,7 @@ select option{
 
 
 
-label{
+ .btn-upload{
     width: 230px;
     padding: 15px;
     font-weight: bold;
@@ -104,14 +105,14 @@ label{
     color: var(--color-green);
     text-align: center;
     cursor: pointer;
-}
+} 
 
 
-label:hover:after{
+.btn-upload:hover:after{
 content: "Upload New";
 }
 
-label:hover span{
+.btn-upload:hover span{
     display: none;
     }
 
