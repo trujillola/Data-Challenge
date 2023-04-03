@@ -139,6 +139,7 @@ application/backend/app/model/model_demo_old.h5
 application/backend/app/model/model_15-2_error.h5
 application/backend/app/model/model_15_error.h5
 application/backend/app/model/weights.h5
+application/backend/app/model/model_inception.h5
 
 
 legends/

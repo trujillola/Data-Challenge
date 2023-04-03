@@ -24,8 +24,10 @@ class ResNetModel:
     model_filepath : str
     data_dir : str = "./app/data/results/"
     # class_labels : list = ['anhydrite', 'calcareous_dolomite', 'chalk', 'chert', 'clay', 'coal_lignite', 'conglomerate', 'dolomite', 'dolomitic_limestone', 'fossiliferous', 'glauconite', 'gypsum', 'limestone', 'marl', 'metamorphic', 'pyrite', 'salt', 'sand', 'shale', 'silt', 'tuff']
-    class_labels : list = ['coal_lignite', 'marl', 'marl_limestone', 'sand', 'sand_clay']
-    
+    # class_labels : list = ['coal_lignite', 'marl', 'marl_limestone', 'sand', 'sand_clay']
+
+    class_labels : list = ['claystone', 'limestone', 'tuff']
+
     def __init__(self, model_file_name : str):
         """
             Initialize the model
